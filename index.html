@@ -20431,24 +20431,7 @@ ${"</scr"+"ipt>"}
           .wrap{ max-width: 1200px; margin: 0 auto; padding: 14px 14px 18px; }
           .card, .panel, .box{ border-radius: var(--radius) !important; box-shadow: var(--shadow) !important; }
           .btn, button{ border-radius: 14px !important; }
-          @media(max-width:1100px){
-            html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
-            *{box-sizing:border-box;min-width:0!important}
-            .wrapper,.wrap,main,.main,.app,.shell,.container,.content{width:100%!important;max-width:100%!important;min-width:0!important;margin-left:0!important;margin-right:0!important}
-            .wrapper{display:block!important;height:auto!important;overflow-x:hidden!important}
-            .content{padding-left:8px!important;padding-right:8px!important}
-            .grid,.cols,.two,.three,.four,.layout,.contentGrid{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
-            .card,.panel,.box,section,article{max-width:100%!important;min-width:0!important}
-            table{width:100%!important;min-width:0!important;table-layout:fixed!important}
-            th,td{white-space:normal!important;word-break:break-all!important;font-size:11px!important;padding:6px 4px!important}
-            header{width:100%!important;max-width:100%!important;display:block!important;padding:9px 8px!important}
-            header .top-actions{display:grid!important;grid-template-columns:44px minmax(0,1fr) 44px 44px!important;width:100%!important;margin-top:8px!important;gap:5px!important}
-            header .top-actions .input{width:100%!important}
-            input,select,textarea{max-width:100%!important;min-width:0!important}
-            img,video,canvas,iframe{max-width:100%!important;height:auto}
-            .flex,.row,.toolbar,.actions{flex-wrap:wrap!important}
-            .tableWrap,.table-wrap,.scroll{overflow-x:hidden!important}
-          }
+          html,body,.wrapper,.main{max-width:100%!important;overflow-x:hidden!important}
         `;
         (doc.head || doc.documentElement).appendChild(st);
       }
@@ -38023,71 +38006,10 @@ function buildToolbar(module){
   if (!iframe) return;
   var id = 'hostLiveToolbar_' + module;
   if (module === 'social'){
-    var card = iframe.parentNode;
-    var header = card && card.firstElementChild ? card.firstElementChild : null;
-    var actionsHost = header && header.lastElementChild ? header.lastElementChild : null;
-    if (!actionsHost) return;
-
     var topId = 'hostLiveTopActions_' + module;
     var topControls = document.getElementById(topId);
-    if (!topControls){
-      topControls = document.createElement('div');
-      topControls.id = topId;
-      topControls.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:nowrap;flex:1 1 auto;justify-content:flex-end;overflow-x:auto;padding:2px 0;';
-      topControls.innerHTML = [
-        '<span class="host-live-sync" id="hostLiveSync_' + module + '" style="white-space:nowrap;flex:0 0 auto;">未同步</span>',
-        '<input type="search" data-role="search-top" placeholder="搜索新增内容..." style="height:44px;width:220px;min-width:180px;max-width:220px;flex:0 0 220px;padding:0 16px;border-radius:16px;border:1px solid rgba(15,23,42,.12);background:#fff;color:inherit;font:inherit;outline:none;" />',
-        '<button class="btn" type="button" data-act="manage" style="white-space:nowrap;flex:0 0 auto;">✍️ 分类管理</button>',
-        '<button class="btn" type="button" data-act="pull" style="white-space:nowrap;flex:0 0 auto;">🌐 拉取</button>',
-        '<button class="btn" type="button" data-act="import" style="white-space:nowrap;flex:0 0 auto;">📥 导入</button>',
-        '<button class="btn" type="button" data-act="refresh" style="white-space:nowrap;flex:0 0 auto;">🔄 刷新</button>'
-      ].join('');
-      var reloadBtn = document.getElementById('btnReloadHostSocial');
-      if (reloadBtn){
-        reloadBtn.style.whiteSpace = 'nowrap';
-        reloadBtn.style.minWidth = '96px';
-        reloadBtn.style.width = 'auto';
-        reloadBtn.style.height = '44px';
-        reloadBtn.style.flex = '0 0 auto';
-        reloadBtn.style.display = 'inline-flex';
-        reloadBtn.style.alignItems = 'center';
-        reloadBtn.style.justifyContent = 'center';
-        reloadBtn.style.padding = '0 18px';
-        topControls.appendChild(reloadBtn);
-      }
-      actionsHost.appendChild(topControls);
-    }
-
-    var oldBar = document.getElementById(id);
-    if (oldBar) oldBar.remove();
-
-    var topSearch = topControls.querySelector('input[data-role="search-top"]');
-    if (topSearch) topSearch.value = runtime.search[module] || '';
-
-    if (!topControls.__hostLiveBound){
-      topControls.__hostLiveBound = true;
-      topControls.addEventListener('input', function(ev){
-        var input = ev.target && ev.target.closest ? ev.target.closest('input[data-role="search-top"]') : null;
-        if (!input) return;
-        runtime.search[module] = safeText(input.value).trim();
-        applyModuleContent(module);
-      });
-      topControls.addEventListener('click', function(ev){
-        var btn = ev.target && ev.target.closest ? ev.target.closest('button[data-act]') : null;
-        if (!btn) return;
-        var act = btn.getAttribute('data-act');
-        if (act === 'manage') openModal(module);
-        else if (act === 'pull') fetchRemote(module);
-        else if (act === 'import'){
-          openModal(module);
-          var input = document.getElementById('hostLiveImportFile');
-          if (input){ input.value = ''; input.click(); }
-        } else if (act === 'refresh'){
-          applyModuleContent(module);
-          notify(LABEL_MAP[module] + '新增内容已刷新');
-        }
-      });
-    }
+    if(topControls) topControls.remove();
+    var oldBar=document.getElementById(id); if(oldBar) oldBar.remove();
     return;
   }
 

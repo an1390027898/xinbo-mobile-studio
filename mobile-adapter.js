@@ -191,6 +191,12 @@
     install.addEventListener('click',async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;install.dataset.show='0'});
     window.addEventListener('appinstalled',()=>{install.dataset.show='0'});
     if('serviceWorker'in navigator){
+      let reloadingForUpdate=false;
+      navigator.serviceWorker.addEventListener('controllerchange',()=>{
+        if(reloadingForUpdate)return;
+        reloadingForUpdate=true;
+        location.reload();
+      });
       navigator.serviceWorker.register('./sw.js').then(reg=>{
         reg.addEventListener('updatefound',()=>{
           const worker=reg.installing;if(!worker)return;
