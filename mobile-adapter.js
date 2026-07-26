@@ -178,6 +178,13 @@
     });
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installCompactHeader,{once:true});else installCompactHeader();
+  document.addEventListener('click',event=>{
+    const button=event.target?.closest?.('#btnOpenKnowledge');
+    if(!button)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    location.assign(new URL('./knowledge.html',location.href).href);
+  },true);
   const installPwaSupport=()=>{
     if(!document.body)return;
     if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});

@@ -69,7 +69,7 @@ async function run(){
     }
     mark('worker',true,'完成');
     const cache=await caches.open('xinbo-manual-bootstrap-v1');
-    const files=['./index.html','./install.html','./mobile-full.css','./mobile-adapter.js','./manifest.webmanifest','./icon-512.png'];
+    const files=['./index.html','./install.html','./knowledge.html','./mobile-full.css','./mobile-adapter.js','./manifest.webmanifest','./icon-512.png','./vendor/lunar-javascript/lunar.js'];
     for(const file of files){
       const response=await Promise.race([
         fetch(file+'?install='+Date.now(),{cache:'no-store'}),
