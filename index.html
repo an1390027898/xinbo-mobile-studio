@@ -3408,6 +3408,7 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
 </div>
 <div class="tools">
 <button class="btn" id="btnOpenAlmanacWindow" type="button" title="在独立窗口打开婚嫁万年历">📜 万年历</button>
+<button class="btn" id="btnOpenKnowledge" type="button" title="打开知识库">🧠 知识库</button>
 <div class="theme-switch" title="主题切换（会自动记住）">
 <button class="tbtn" data-theme="cream" id="themeCream">奶油白 INS</button>
 <button class="tbtn" data-theme="neon" id="themeNeon">霓虹夜店</button>
@@ -3432,7 +3433,6 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
 <button aria-selected="false" class="tab" id="tabLines" role="tab">🎙 主持台词</button>
 <button aria-selected="false" class="tab" id="tabSocial" role="tab">📱 主持人自媒体入门与进阶</button>
 <button aria-selected="false" class="tab" id="tabMusic" role="tab">🎵 音乐系统</button>
-<button aria-selected="false" class="tab" id="tabKnowledge" role="tab">🧠 知识库</button>
 </div>
 </header>
 <!-- Mobile learning bar (shows only on small screens in learning mode) -->
@@ -20721,7 +20721,7 @@ ${"</scr"+"ipt>"}
   })();
 
   $("#tabMusic")?.addEventListener("click", ()=>setTab("music"));
-  $("#tabKnowledge")?.addEventListener("click", async ()=>{
+  $("#btnOpenKnowledge")?.addEventListener("click", async ()=>{
     try{
       if(!window.anningDesktop?.openKnowledgeWindow){
         window.open("./knowledge.html","knowledge_center","noopener");

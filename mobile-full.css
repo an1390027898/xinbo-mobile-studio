@@ -31,10 +31,7 @@ input,textarea,select{font-size:max(16px,1em)}
   #viewMultitrack,.multitrack-editor-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
   .wbPhoneBoard{max-width:100%!important}
   .wbPhoneLine{grid-template-columns:86px 1fr!important}
-  #mobileKnowledgeQuick{display:flex!important}
 }
-#mobileKnowledgeQuick{display:none;position:fixed;z-index:2147483000;right:14px;bottom:calc(70px + env(safe-area-inset-bottom));align-items:center;justify-content:center;min-width:112px;min-height:48px;padding:0 15px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:linear-gradient(135deg,#168a58,#27a66a);color:#fff;font-weight:800;box-shadow:0 12px 28px rgba(18,91,57,.32);touch-action:manipulation}
-body:not([data-mobile-music-active="1"]) #mobileKnowledgeQuick{display:none!important}
 #mobileInstallApp{display:none;position:fixed;z-index:2147483002;left:14px;bottom:calc(70px + env(safe-area-inset-bottom));min-height:48px;padding:0 15px;border:0;border-radius:999px;background:#171a24;color:#fff;font-weight:800;box-shadow:0 12px 28px rgba(20,22,31,.28)}
 @media(max-width:720px){#mobileInstallApp[data-show="1"]{display:block}}
 #pwaUpdateNotice{position:fixed;z-index:2147483600;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top));display:none;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:15px;background:#171a24;color:#fff;box-shadow:0 12px 36px rgba(0,0,0,.3)}

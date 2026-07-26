@@ -162,27 +162,6 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',scheduleHashView,{once:true});
   else scheduleHashView();
   window.addEventListener('hashchange',()=>setTimeout(openHashView,0));
-  const installMobileKnowledgeQuick=()=>{
-    if(!document.body)return;
-    let button=document.getElementById('mobileKnowledgeQuick');
-    if(!button){
-      button=document.createElement('button');button.id='mobileKnowledgeQuick';button.type='button';
-      button.textContent='🧠 知识库';button.setAttribute('aria-label','从播放器进入知识库');
-      button.addEventListener('click',()=>{location.href='./knowledge.html'});
-      document.body.appendChild(button);
-    }
-    const sync=()=>{
-      const active=Boolean(document.getElementById('viewMusic')?.classList.contains('active'));
-      document.body.dataset.mobileMusicActive=active?'1':'0';
-    };
-    sync();
-    const observer=new MutationObserver(sync);
-    const music=document.getElementById('viewMusic'),tabs=document.querySelector('.tabs');
-    if(music)observer.observe(music,{attributes:true,attributeFilter:['class','style']});
-    if(tabs)observer.observe(tabs,{subtree:true,attributes:true,attributeFilter:['class','aria-selected']});
-  };
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(installMobileKnowledgeQuick,500),{once:true});
-  else setTimeout(installMobileKnowledgeQuick,500);
   const installPwaSupport=()=>{
     if(!document.body)return;
     let installPrompt=null;
