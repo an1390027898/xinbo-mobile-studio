@@ -25764,7 +25764,64 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
   .panelBody,.gridWrap,.cardBody{padding:9px!important}
   .search{min-height:46px!important;padding:8px 10px!important}
   .dropzone .btn{width:100%!important}
-  #queueList{justify-content:center!important}
+  #queuePlayModeTag,
+  #btnQueuePlayMode{display:none!important}
+  #queueCard .cardHead{
+    min-height:52px!important;
+    padding:7px 9px!important;
+    align-items:center!important;
+  }
+  #queueCard .cardHead>.row{
+    flex:1!important;
+    min-width:0!important;
+    gap:7px!important;
+  }
+  #queueCard .qTileCtl{
+    flex:1!important;
+    min-width:0!important;
+    gap:7px!important;
+  }
+  #btnQTileSm,#btnQTileLg,#qTileLabel{display:none!important}
+  #queueCard .qTileRange{
+    display:block!important;
+    width:100%!important;
+    min-width:90px!important;
+    height:34px!important;
+  }
+  #rightTop{
+    flex:0 0 min(31%,210px)!important;
+    min-height:150px!important;
+    padding:7px!important;
+  }
+  #splitV{display:none!important}
+  #rightBottom{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    padding:0 7px 7px!important;
+  }
+  #queueCard .cardBody{padding:7px!important}
+  #queueCard .cardBody>.small{display:none!important}
+  #queueList{
+    justify-content:start!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-rows:auto!important;
+    gap:7px!important;
+    margin-top:0!important;
+    padding-bottom:16px!important;
+  }
+  #queueList .queueCue{
+    width:100%!important;
+    height:148px!important;
+    aspect-ratio:auto!important;
+  }
+  #queueList .queueCue .cueTop{padding:7px 30px 5px 7px!important}
+  #queueList .queueCue .cueBtns{padding:5px!important;gap:4px!important}
+  #queueList .queueCue .cueBtns .modeBtns{display:none!important}
+  #queueList .queueCue .cueTitle .name[data-role="qName"]{font-size:13px!important}
+  @media(max-width:560px){
+    #queueList{grid-template-columns:1fr!important}
+    #queueList .queueCue{height:132px!important}
+  }
 }
 </style>
 
@@ -36446,6 +36503,15 @@ const STAFF_PRESETS = {
     return stableSetTab(key);
   }
 
+  function openLearnPicker(){
+    const picker = document.getElementById('learnPicker');
+    if(!picker) return stableSetTab('handbook');
+    picker.hidden = false;
+    picker.setAttribute('aria-hidden','false');
+    requestAnimationFrame(() => picker.classList.add('show'));
+    return true;
+  }
+
   function routeLabel(label){
     const txt = String(label || '').trim();
     const map = {
@@ -36490,7 +36556,7 @@ const STAFF_PRESETS = {
     if(id === 'tabSocial') return 'social';
     if(id === 'tabMusic') return 'music';
     const go = node.getAttribute && node.getAttribute('data-go');
-    if(go === 'learn') return 'handbook';
+    if(go === 'learn') return '__learn_picker__';
     if(go === 'schedule' || go === 'customers' || go === 'weddingButler' || go === 'music') return go;
     const learn = node.getAttribute && node.getAttribute('data-learn');
     if(learn) return learn;
@@ -36525,9 +36591,13 @@ const STAFF_PRESETS = {
     if(resolved === '__close_center__') { closeCenter(); return; }
     if(resolved === '__close_learn__') {
       const picker = document.getElementById('learnPicker');
-      if(picker){ picker.hidden = true; picker.setAttribute('aria-hidden','true'); }
+      if(picker){
+        picker.classList.remove('show');
+        setTimeout(()=>{ picker.hidden = true; picker.setAttribute('aria-hidden','true'); },180);
+      }
       return;
     }
+    if(resolved === '__learn_picker__') { openLearnPicker(); return; }
     routeLabel(resolved);
   }
 
@@ -40147,7 +40217,15 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
     .wbPickupValue{font-weight:650}
     .wbPickupTable tbody tr:nth-child(even) .wbPickupValue{background:#fffafb}
     .wbPickupTable tbody tr{break-inside:avoid;page-break-inside:avoid}
-    @media(max-width:760px){.wbPickupSheet h1{font-size:25px;letter-spacing:1px}.wbPickupTable{min-width:680px}.wbPickupTable th,.wbPickupTable td{font-size:15px;padding:8px 9px}.wbPickupTable thead th,.wbPickupGroup{font-size:16px!important}}
+    @media(max-width:760px){
+      .wbPickupSheet{width:100%;box-shadow:none}
+      .wbPickupSheet h1{font-size:21px;letter-spacing:1px;padding:12px 6px 9px}
+      .wbPickupTableWrap{overflow-x:hidden}
+      .wbPickupTable{min-width:0;width:100%;table-layout:fixed}
+      .wbPickupTable col:nth-child(1){width:19%}.wbPickupTable col:nth-child(2){width:25%}.wbPickupTable col:nth-child(3){width:56%}
+      .wbPickupTable th,.wbPickupTable td{font-size:11px;padding:5px 4px;line-height:1.35;word-break:break-all}
+      .wbPickupTable thead th,.wbPickupGroup{font-size:11px!important}
+    }
     @media print{.wbPickupSheet{width:100%;box-shadow:none}.wbPickupSheet h1{font-size:28px;padding:10px 8px}.wbPickupTableWrap{overflow:visible}.wbPickupTable{table-layout:fixed}.wbPickupTable th,.wbPickupTable td{font-size:13px;padding:6px 7px}.wbPickupTable thead th,.wbPickupGroup{font-size:14px!important}}
   </style>`; }
   function cleanDemoText(v){
@@ -40388,6 +40466,31 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
   }
   function safeFile(s){ return String(s||'婚礼管家').replace(/[\/:*?"<>|\s]+/g,'_').slice(0,60); }
   function downloadBlob(name, blob){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},0); }
+  function exportReadableTextImage(title, text, filename){
+    try{
+      const canvas=document.createElement('canvas'), ctx=canvas.getContext('2d');
+      const width=1080, pad=54, font=26, lineH=39, maxW=width-pad*2;
+      ctx.font=`${font}px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif`;
+      const source=String(text||'').replace(/\s+\n/g,'\n').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+      const lines=[];
+      source.forEach(par=>{
+        let line='';
+        Array.from(par).forEach(ch=>{
+          const next=line+ch;
+          if(ctx.measureText(next).width>maxW && line){ lines.push(line); line=ch; } else line=next;
+        });
+        if(line) lines.push(line);
+      });
+      canvas.width=width;
+      canvas.height=Math.min(16000,Math.max(720,150+lines.length*lineH));
+      ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle='#d60018';ctx.font='bold 38px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif';ctx.fillText(title||'婚礼管家',pad,68);
+      ctx.strokeStyle='#e3e3e3';ctx.beginPath();ctx.moveTo(pad,92);ctx.lineTo(width-pad,92);ctx.stroke();
+      ctx.fillStyle='#171717';ctx.font=`${font}px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif`;
+      lines.slice(0,Math.floor((canvas.height-125)/lineH)).forEach((line,i)=>ctx.fillText(line,pad,130+i*lineH));
+      canvas.toBlob(blob=>{ if(blob) deliverImageBlob(filename||`${safeFile(title)}.png`,blob); else alert('图片生成失败，请使用打印功能保存为 PDF'); },'image/png');
+    }catch(e){ alert('图片生成失败，请使用打印功能保存为 PDF'); }
+  }
   function showImageSavePreview(name, blob){
     const old=document.getElementById('wbImageSavePreview'); if(old) old.remove();
     const url=URL.createObjectURL(blob);
@@ -40481,8 +40584,8 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
       const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><foreignObject x="0" y="0" width="100%" height="100%">${xhtml}</foreignObject></svg>`;
       const url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}));
       const img=new Image();
-      img.onload=()=>{ try{ const canvas=document.createElement('canvas'); canvas.width=width; canvas.height=height; const ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,width,height); ctx.drawImage(img,0,0); canvas.toBlob(async blob=>{ if(blob) await deliverImageBlob(filename||`${safeFile(title)}.png`, blob); else alert('导出图片失败：手机可用内存不足，请导出内容较少的单页'); URL.revokeObjectURL(url); holder.remove(); }, 'image/png'); }catch(e){ URL.revokeObjectURL(url); holder.remove(); alert('导出图片失败：当前环境限制截图生成'); } };
-      img.onerror=()=>{ URL.revokeObjectURL(url); holder.remove(); alert('导出图片失败：当前环境不支持该截图方式'); };
+      img.onload=()=>{ try{ const canvas=document.createElement('canvas'); canvas.width=width; canvas.height=height; const ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,width,height); ctx.drawImage(img,0,0); canvas.toBlob(async blob=>{ if(blob) await deliverImageBlob(filename||`${safeFile(title)}.png`, blob); else exportReadableTextImage(title,holder.innerText,filename); URL.revokeObjectURL(url); holder.remove(); }, 'image/png'); }catch(e){ const readable=holder.innerText; URL.revokeObjectURL(url); holder.remove(); exportReadableTextImage(title,readable,filename); } };
+      img.onerror=()=>{ const readable=holder.innerText; URL.revokeObjectURL(url); holder.remove(); exportReadableTextImage(title,readable,filename); };
       img.src=url;
     }catch(e){ console.error(e); alert('导出图片失败：'+(e && e.message ? e.message : '未知错误')); }
   }

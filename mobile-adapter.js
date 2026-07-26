@@ -155,7 +155,7 @@
   window.electronAPI=api;
   const openHashView=()=>{
     const hash=String(location.hash||'').replace('#','').toLowerCase();
-    const ids={music:'tabMusic',player:'tabMusic',schedule:'tabSchedule',customers:'tabCustomers',butler:'tabWeddingButler',lines:'tabLines',video:'tabVideoModule'};
+    const ids={music:'tabMusic',player:'tabMusic',schedule:'tabSchedule',customers:'tabCustomers',butler:'tabWeddingButler',handbook:'tabHandbook',learn:'tabHandbook',lines:'tabLines',social:'tabSocial',video:'tabVideoModule'};
     const target=document.getElementById(ids[hash]);if(target)target.click();
   };
   const scheduleHashView=()=>[120,450,1000,1800,3000,5000].forEach(ms=>setTimeout(openHashView,ms));
