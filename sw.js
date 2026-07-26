@@ -1,7 +1,7 @@
 const SCOPE_KEY=new URL(self.registration.scope).pathname.replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'')||'root'
 const CACHE_PREFIX=`xinbo-pwa-${SCOPE_KEY}-`
-const VERSION=`${CACHE_PREFIX}v21-atomic-safe-update`
-const ESSENTIAL=['./index.html','./mobile-full.css','./mobile-adapter.js','./manifest.webmanifest','./icon-512.png']
+const VERSION=`${CACHE_PREFIX}v22-verified-install`
+const ESSENTIAL=['./index.html','./install.html','./mobile-full.css','./mobile-adapter.js','./manifest.webmanifest','./icon-512.png']
 const OPTIONAL=['./','./update.html','./knowledge.html','./preferences.html','./output.html','./license.html','./splash.html','./video-final.css','./video-final.js','./lame.min.js','./vendor/lunar-javascript/lunar.js']
 self.addEventListener('install',event=>event.waitUntil(
   caches.open(VERSION)
