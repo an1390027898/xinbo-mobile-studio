@@ -172,6 +172,7 @@
     };
     sync();mq.addEventListener?.('change',sync);
     menu.addEventListener('click',event=>{
+      if(mq.matches&&menu.open&&event.target===menu){menu.open=false;return}
       if(!mq.matches||event.target.closest('summary'))return;
       if(event.target.closest('button'))setTimeout(()=>{menu.open=false},0);
     });
@@ -179,6 +180,7 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installCompactHeader,{once:true});else installCompactHeader();
   const installPwaSupport=()=>{
     if(!document.body)return;
+    if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
     let installPrompt=null;
     const install=document.createElement('button');install.id='mobileInstallApp';install.type='button';install.textContent='安装到桌面';
     document.body.appendChild(install);
