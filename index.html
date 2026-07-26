@@ -9468,7 +9468,7 @@ $("#importBtn").addEventListener("click", async ()=>{
 <div class="muted" style="margin:0 0 10px">
               当前仅保留 <strong>A1 播放器</strong>。建议使用 <b>↑↓ 调主音量</b>、<b>左右/多媒体键 切上下曲</b>、<b>字母热键 秒播</b>。
             </div>
-<iframe id="p1ConsoleFrame" title="A1 播放器"></iframe>
+<iframe allow="autoplay" id="p1ConsoleFrame" title="A1 播放器"></iframe>
 </div>
 <div aria-label="伴奏制作（UVR）" id="msUvrPage">
 <div class="msUvrTop">
@@ -20431,17 +20431,23 @@ ${"</scr"+"ipt>"}
           .wrap{ max-width: 1200px; margin: 0 auto; padding: 14px 14px 18px; }
           .card, .panel, .box{ border-radius: var(--radius) !important; box-shadow: var(--shadow) !important; }
           .btn, button{ border-radius: 14px !important; }
-          @media(max-width:720px){
+          @media(max-width:1100px){
             html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
-            .wrap,main,.app,.shell,.container{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding-left:8px!important;padding-right:8px!important}
+            *{box-sizing:border-box;min-width:0!important}
+            .wrapper,.wrap,main,.main,.app,.shell,.container,.content{width:100%!important;max-width:100%!important;min-width:0!important;margin-left:0!important;margin-right:0!important}
+            .wrapper{display:block!important;height:auto!important;overflow-x:hidden!important}
+            .content{padding-left:8px!important;padding-right:8px!important}
             .grid,.cols,.two,.three,.four,.layout,.contentGrid{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
             .card,.panel,.box,section,article{max-width:100%!important;min-width:0!important}
             table{width:100%!important;min-width:0!important;table-layout:fixed!important}
             th,td{white-space:normal!important;word-break:break-all!important;font-size:11px!important;padding:6px 4px!important}
+            header{width:100%!important;max-width:100%!important;display:block!important;padding:9px 8px!important}
+            header .top-actions{display:grid!important;grid-template-columns:44px minmax(0,1fr) 44px 44px!important;width:100%!important;margin-top:8px!important;gap:5px!important}
+            header .top-actions .input{width:100%!important}
             input,select,textarea{max-width:100%!important;min-width:0!important}
             img,video,canvas,iframe{max-width:100%!important;height:auto}
-            [style*="min-width"]{min-width:0!important}
-            [style*="grid-template-columns"]{grid-template-columns:minmax(0,1fr)!important}
+            .flex,.row,.toolbar,.actions{flex-wrap:wrap!important}
+            .tableWrap,.table-wrap,.scroll{overflow-x:hidden!important}
           }
         `;
         (doc.head || doc.documentElement).appendChild(st);
@@ -26634,6 +26640,17 @@ function writeTrimRange(inSec, outSec){
       }
       return audio;
     }
+    function primeIOSAudio(){
+      try{
+        const audio=ensureAudioUserGesture(), ctx=audio.ctx;
+        const buffer=ctx.createBuffer(1,1,22050);
+        const source=ctx.createBufferSource();
+        source.buffer=buffer;source.connect(audio.master);source.start(0);
+        const resumed=ctx.resume();
+        if(resumed&&typeof resumed.catch==='function')resumed.catch(()=>{});
+        return audio;
+      }catch(e){return null}
+    }
 
     async function decodeFile(file, opts={decode:true}){
       const buf = await file.arrayBuffer();
@@ -26965,13 +26982,9 @@ function writeTrimRange(inSec, outSec){
       window.addEventListener("pagehide", ()=>a1ShutdownAudioRuntime({closeContext:true}), {capture:true});
       window.addEventListener("beforeunload", ()=>a1ShutdownAudioRuntime({closeContext:true}), {capture:true});
       // 用户重新点击/按键时，若设备切换导致上下文挂起，安全恢复现有上下文。
-      const resume = ()=>{
-        const ctx = state.audio?.ctx;
-        if (ctx && (ctx.state === "suspended" || ctx.state === "interrupted")){
-          try{ ctx.resume(); }catch(e){}
-        }
-      };
+      const resume = ()=>{ primeIOSAudio(); };
       window.addEventListener("pointerdown", resume, {capture:true, passive:true});
+      window.addEventListener("touchend", resume, {capture:true, passive:true});
       window.addEventListener("keydown", resume, {capture:true});
       setTimeout(a1RunAudioHealthCheck, 1000);
     }
@@ -27570,6 +27583,7 @@ function writeTrimRange(inSec, outSec){
     async function playCue(cueId, opts={}){
       const c = getCue(cueId);
       if (!c){ return false; }
+      primeIOSAudio();
       const desiredQueueIdx = Number.isInteger(opts.queueIdx) ? opts.queueIdx : (Number.isInteger(state.focusQueueIdx) ? state.focusQueueIdx : null);
 
       // 非强制调用同一首时，直接作为播放/暂停切换，不进入异步加载。
