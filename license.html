@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>软件激活 · 信伯礼控 Simple Studio</title>
+  <style>
+    :root{--bg:#0b1020;--panel:#111a33;--panel2:#0f172d;--line:rgba(255,255,255,.12);--text:#eef3ff;--muted:#9dadc9;--brand:#7dd3fc;--ok:#34d399;--danger:#fb7185;}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 10%,rgba(125,211,252,.20),transparent 28%),linear-gradient(135deg,#081026,#10172f);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text);display:flex;align-items:center;justify-content:center;padding:24px;}
+    .card{width:min(680px,100%);background:rgba(17,26,51,.92);border:1px solid var(--line);box-shadow:0 24px 80px rgba(0,0,0,.38);border-radius:28px;overflow:hidden;}
+    .head{padding:28px 30px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),transparent)}
+    .badge{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(125,211,252,.35);background:rgba(125,211,252,.10);color:#d8f5ff;border-radius:999px;padding:7px 12px;font-size:13px;margin-bottom:12px}.dot{width:8px;height:8px;border-radius:999px;background:var(--brand);box-shadow:0 0 20px var(--brand)}
+    h1{margin:0;font-size:26px;letter-spacing:.3px}.sub{margin:10px 0 0;color:var(--muted);line-height:1.7;font-size:14px}
+    .body{padding:24px 30px 30px}.machine{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:16px}.machine label{display:block;color:var(--muted);font-size:13px;margin-bottom:8px}.machine .row{display:flex;gap:10px;align-items:center}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:18px;font-weight:800;letter-spacing:1px;flex:1;color:#fff;word-break:break-all}.btnSmall{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);border-radius:12px;padding:9px 12px;cursor:pointer}.btnSmall:hover{background:rgba(255,255,255,.12)}
+    textarea{width:100%;min-height:128px;resize:vertical;border:1px solid var(--line);background:rgba(5,10,25,.72);color:#fff;border-radius:18px;padding:16px;outline:none;font-size:14px;line-height:1.55;box-shadow:inset 0 2px 10px rgba(0,0,0,.18)} textarea:focus{border-color:rgba(125,211,252,.72);box-shadow:0 0 0 4px rgba(125,211,252,.12),inset 0 2px 10px rgba(0,0,0,.18)}
+    .actions{display:flex;gap:12px;margin-top:16px}.primary{flex:1;border:0;border-radius:16px;padding:14px 18px;background:linear-gradient(135deg,#38bdf8,#22c55e);color:#06111f;font-weight:900;font-size:16px;cursor:pointer;box-shadow:0 14px 32px rgba(34,197,94,.18)}.primary:hover{filter:brightness(1.05)}.secondary{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:rgba(255,255,255,.06);color:var(--text);cursor:pointer}
+    .msg{margin-top:14px;padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.6;display:none}.msg.ok{display:block;background:rgba(52,211,153,.11);border:1px solid rgba(52,211,153,.32);color:#c9ffea}.msg.err{display:block;background:rgba(251,113,133,.11);border:1px solid rgba(251,113,133,.32);color:#ffd3da}
+    .tips{margin:18px 0 0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.8}.foot{padding:14px 30px 22px;color:#7182a8;font-size:12px}.hidden{display:none!important}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <section class="head">
+      <div class="badge"><span class="dot"></span><span>首次使用需要激活</span></div>
+      <h1>信伯礼控 Simple Studio</h1>
+      <p class="sub">请输入管理员发给你的软件密钥。客户密钥默认一机一码；超级管理员密钥可在所有电脑上激活。激活成功后，本机以后会自动进入程序，不需要每次重复输入。</p>
+    </section>
+    <section class="body">
+      <div class="machine">
+        <label>本机机器码（需要一机一码时，把这串发给管理员）</label>
+        <div class="row"><div class="code" id="deviceCode">读取中...</div><button class="btnSmall" id="copyDevice">复制</button></div>
+      </div>
+      <textarea id="licenseKey" placeholder="请粘贴密钥，例如：XB-xxxxx.xxxxx"></textarea>
+      <div class="actions">
+        <button class="primary" id="activateBtn">激活并进入程序</button>
+        <button class="secondary" id="pasteBtn">粘贴</button>
+      </div>
+      <div class="msg" id="message"></div>
+      <ul class="tips">
+        <li>客户密钥：必须先把上方机器码发给管理员，由管理员生成一机一码密钥。</li>
+        <li>超级管理员密钥：仅管理员本人使用，不绑定机器，所有电脑都可以激活。</li>
+        <li>客户密钥过期、机器码不匹配，或更换电脑时，请联系管理员重新生成。</li>
+      </ul>
+    </section>
+    <div class="foot">© 信伯礼控 Simple Studio · License Gate</div>
+  </main>
+  <script>
+    const $ = (s)=>document.querySelector(s);
+    function show(type, text){ const el=$('#message'); el.className='msg '+(type==='ok'?'ok':'err'); el.textContent=text; }
+    async function loadStatus(){
+      const res = await window.anningDesktop.getLicenseStatus();
+      $('#deviceCode').textContent = res.deviceCode || '读取失败';
+      if(res.activated) show('ok','本机已激活，正在进入程序...');
+    }
+    function cleanLicenseClipboardText(raw){
+      const source = String(raw || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+      if(!source) return '';
+      const compact = source.replace(/\s+/g, '');
+      const match = compact.match(/XB-[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/);
+      return match ? match[0] : compact;
+    }
+    async function nativeClipboardRead(){
+      if(window.anningDesktop?.readClipboardText){
+        const res = await window.anningDesktop.readClipboardText();
+        if(res?.ok) return String(res.text || '');
+        throw new Error(res?.reason || '系统剪贴板读取失败');
+      }
+      if(navigator.clipboard?.readText) return await navigator.clipboard.readText();
+      throw new Error('当前环境不支持读取剪贴板');
+    }
+    async function nativeClipboardWrite(value){
+      if(window.anningDesktop?.writeClipboardText){
+        const res = await window.anningDesktop.writeClipboardText(String(value || ''));
+        if(res?.ok) return;
+        throw new Error(res?.reason || '系统剪贴板写入失败');
+      }
+      if(navigator.clipboard?.writeText) return await navigator.clipboard.writeText(String(value || ''));
+      throw new Error('当前环境不支持写入剪贴板');
+    }
+    $('#copyDevice').onclick = async ()=>{
+      try{
+        await nativeClipboardWrite($('#deviceCode').textContent);
+        show('ok','机器码已复制，可以发给管理员生成一机一码密钥。');
+      }catch(e){ show('err','复制失败，请手动选中机器码复制。'); }
+    };
+    $('#pasteBtn').onclick = async ()=>{
+      const btn = $('#pasteBtn');
+      const oldText = btn.textContent;
+      btn.disabled = true; btn.textContent = '读取中...';
+      try{
+        const raw = await nativeClipboardRead();
+        const key = cleanLicenseClipboardText(raw);
+        if(!key) throw new Error('剪贴板中没有文字');
+        $('#licenseKey').value = key;
+        $('#licenseKey').dispatchEvent(new Event('input', { bubbles:true }));
+        $('#licenseKey').focus();
+        $('#licenseKey').setSelectionRange(key.length, key.length);
+        if(key.startsWith('XB-')) show('ok','安全密钥已粘贴，可以点击“激活并进入程序”。');
+        else show('err','已读取剪贴板，但内容不像完整的 XB- 安全密钥，请检查后再激活。');
+      }catch(e){
+        $('#licenseKey').focus();
+        show('err','自动粘贴失败：'+(e?.message || '未知错误')+'。也可以按 Ctrl+V（Mac 按 Command+V）粘贴。');
+      }finally{ btn.disabled = false; btn.textContent = oldText; }
+    };
+    $('#licenseKey').addEventListener('paste', ()=>setTimeout(()=>{
+      const key = cleanLicenseClipboardText($('#licenseKey').value);
+      $('#licenseKey').value = key;
+      if(key) show('ok','安全密钥已粘贴，可以点击“激活并进入程序”。');
+    },0));
+    $('#activateBtn').onclick = async ()=>{
+      const key = $('#licenseKey').value.trim();
+      if(!key){ show('err','请先粘贴密钥。'); return; }
+      $('#activateBtn').disabled = true; $('#activateBtn').textContent = '正在验证...';
+      try{
+        const res = await window.anningDesktop.activateLicense(key);
+        if(res.ok){ show('ok','激活成功，正在进入程序...'); }
+        else{ show('err', res.reason || '激活失败，请检查密钥是否正确。'); }
+      }catch(e){ show('err','激活失败：'+(e && e.message ? e.message : '未知错误')); }
+      finally{ $('#activateBtn').disabled = false; $('#activateBtn').textContent = '激活并进入程序'; }
+    };
+    document.addEventListener('DOMContentLoaded', loadStatus);
+  </script>
+</body>
+</html>

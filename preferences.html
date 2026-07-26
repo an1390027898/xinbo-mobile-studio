@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>偏好设置 · 安宁工作台</title>
+  <style>
+    :root{--bg:#0b1020;--card:#12192d;--line:rgba(255,255,255,.08);--txt:#eef3ff;--muted:rgba(238,243,255,.66);--p1:#7c5cff;--p2:#2dd4ff;--ok:#22c55e;--sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",Arial;}
+    *{box-sizing:border-box} body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#0b1020,#0a0f1d);color:var(--txt)}
+    .wrap{padding:22px;display:grid;gap:14px}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .title{font-size:26px;font-weight:900}.sub{margin-top:8px;color:var(--muted);font-size:14px}
+    .pill{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-size:12px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:760px){.grid{grid-template-columns:1fr}}
+    .card{border:1px solid var(--line);border-radius:20px;background:rgba(18,25,45,.92);padding:16px;box-shadow:0 16px 36px rgba(0,0,0,.22)}
+    .card h3{margin:0 0 12px;font-size:15px}
+    .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.05)}
+    .row:first-of-type{border-top:none;padding-top:0}
+    .label{font-size:14px;font-weight:800}.hint{margin-top:4px;font-size:12px;color:var(--muted);line-height:1.55}
+    input[type="checkbox"]{width:18px;height:18px;accent-color:var(--p1)}
+    input[type="number"], select{width:160px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font-weight:800}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font-weight:800;cursor:pointer}
+    .btn:hover{background:rgba(255,255,255,.06)}.btn.primary{background:linear-gradient(135deg,rgba(124,92,255,.24),rgba(45,212,255,.18));border-color:rgba(124,92,255,.34)}
+    .status{padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);font-size:13px}
+    .status.ok{color:#d6ffe3;border-color:rgba(34,197,94,.24);background:rgba(34,197,94,.08)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="title">偏好设置</div>
+        <div class="sub">统一桌面层的启动、恢复、备份和欢迎页逻辑，不改原程序页面结构。</div>
+      </div>
+      <div class="pill" id="ver">版本 v.kb6.0</div>
+    </div>
+    <div class="grid">
+      <section class="card">
+        <h3>启动与恢复</h3>
+        <div class="row"><div><div class="label">默认启动页</div><div class="hint">不显示欢迎页时，按这里的设置直接进入。</div></div><select id="startupTarget"><option value="last">继续上次页面</option><option value="schedule">首页</option><option value="music">音乐系统</option><option value="video">视频系统</option></select></div>
+        <label class="row"><div><div class="label">启动显示欢迎页</div><div class="hint">程序启动后先显示欢迎入口。</div></div><input id="showWelcomeOnLaunch" type="checkbox"></label>
+        <label class="row"><div><div class="label">恢复上次页面</div><div class="hint">仅在默认启动页为“继续上次页面”时生效。</div></div><input id="reopenLastPage" type="checkbox"></label>
+        <label class="row"><div><div class="label">自动恢复输出窗</div><div class="hint">如果上次输出窗处于打开状态，启动时自动恢复。</div></div><input id="reopenOutputOnLaunch" type="checkbox"></label>
+      </section>
+      <section class="card">
+        <h3>备份与快照</h3>
+        <div class="row"><div><div class="label">自动快照间隔</div><div class="hint">建议 3 到 10 分钟。</div></div><input id="autoBackupMinutes" type="number" min="1" max="30" step="1"></div>
+        <div class="row"><div><div class="label">备份保留数量</div><div class="hint">超过上限会自动清理旧备份。</div></div><input id="backupKeepCount" type="number" min="5" max="100" step="1"></div>
+        <div class="row"><div><div class="label">快速操作</div><div class="hint">直接打开备份或日志目录。</div></div><div class="actions"><button class="btn" id="openBackups">备份目录</button><button class="btn" id="openLogs">日志目录</button></div></div>
+      </section>
+      <section class="card">
+        <h3>诊断与恢复</h3>
+        <div class="row"><div><div class="label">当前运行模式</div><div class="hint">安全模式会关闭自动恢复输出窗，并优先以最稳方式启动。</div></div><div class="actions"><button class="btn" id="safeMode">安全模式重启</button></div></div>
+        <div class="row"><div><div class="label">安装前检查</div><div class="hint">检查主页面、输出页、脚本、打包脚本和目录状态。</div></div><div class="actions"><button class="btn" id="preflight">运行检查</button></div></div>
+        <div class="row"><div><div class="label">诊断报告</div><div class="hint">导出当前版本、偏好、窗口和检查结果为 JSON。</div></div><div class="actions"><button class="btn" id="diag">导出诊断</button></div></div>
+      </section>
+    </div>
+    <section class="card">
+      <h3>操作</h3>
+      <div class="actions">
+        <button class="btn primary" id="save">保存设置</button>
+        <button class="btn" id="restore">恢复默认</button>
+        <button class="btn" id="selfCheck">运行自检</button>
+      </div>
+    </section>
+    <div class="status" id="status">准备就绪</div>
+  </div>
+  <script>
+    const els = {
+      startupTarget: document.getElementById('startupTarget'),
+      showWelcomeOnLaunch: document.getElementById('showWelcomeOnLaunch'),
+      reopenLastPage: document.getElementById('reopenLastPage'),
+      reopenOutputOnLaunch: document.getElementById('reopenOutputOnLaunch'),
+      autoBackupMinutes: document.getElementById('autoBackupMinutes'),
+      backupKeepCount: document.getElementById('backupKeepCount'),
+      status: document.getElementById('status')
+    };
+    function setStatus(text, ok=false){ els.status.textContent = text; els.status.className = 'status' + (ok ? ' ok' : ''); }
+    function readForm(){
+      return {
+        startupTarget: String(els.startupTarget.value || 'last'),
+        showWelcomeOnLaunch: !!els.showWelcomeOnLaunch.checked,
+        reopenLastPage: !!els.reopenLastPage.checked,
+        reopenOutputOnLaunch: !!els.reopenOutputOnLaunch.checked,
+        autoBackupMinutes: Math.max(1, Math.min(30, Number(els.autoBackupMinutes.value) || 3)),
+        backupKeepCount: Math.max(5, Math.min(100, Number(els.backupKeepCount.value) || 20))
+      };
+    }
+    async function load(){
+      try {
+        const res = await window.anningDesktop?.getPreferences?.();
+        const prefs = res?.ok ? (res.value || {}) : {};
+        Object.keys(els).forEach((key)=>{
+          if(!(key in prefs) || !els[key]) return;
+          if(els[key].type === 'checkbox') els[key].checked = !!prefs[key];
+          else els[key].value = String(prefs[key]);
+        });
+        setStatus('已读取当前偏好设置', true);
+      } catch {
+        setStatus('读取偏好设置失败');
+      }
+    }
+    document.getElementById('save').addEventListener('click', async ()=>{
+      const prefs = readForm();
+      for (const [key, value] of Object.entries(prefs)) {
+        await window.anningDesktop?.setPreference?.(key, value);
+      }
+      setStatus('偏好设置已保存', true);
+    });
+    document.getElementById('restore').addEventListener('click', async ()=>{
+      const defaults = { startupTarget:'last', showWelcomeOnLaunch:true, reopenLastPage:true, reopenOutputOnLaunch:true, autoBackupMinutes:3, backupKeepCount:20 };
+      Object.entries(defaults).forEach(([key, value])=>{
+        if(els[key].type === 'checkbox') els[key].checked = !!value; else els[key].value = String(value);
+      });
+      for (const [key, value] of Object.entries(defaults)) await window.anningDesktop?.setPreference?.(key, value);
+      setStatus('已恢复默认偏好', true);
+    });
+    document.getElementById('openBackups').addEventListener('click', ()=>window.anningDesktop?.openBackupsDir?.());
+    document.getElementById('openLogs').addEventListener('click', ()=>window.anningDesktop?.openLogsDir?.());
+    document.getElementById('safeMode').addEventListener('click', async ()=>{ try { await window.anningDesktop?.relaunchSafeMode?.(); } catch {} });
+    document.getElementById('preflight').addEventListener('click', async ()=>{ try { const res = await window.anningDesktop?.runInstallPreflight?.(); if(res?.ok) setStatus('安装前检查：' + (res.value?.checks?.length || 0) + ' 项', true); else setStatus('安装前检查失败'); } catch { setStatus('安装前检查失败'); } });
+    document.getElementById('diag').addEventListener('click', async ()=>{ try { const res = await window.anningDesktop?.exportDiagnosticsReport?.(); if(res?.ok) setStatus('诊断报告已导出', true); else setStatus('诊断导出已取消'); } catch { setStatus('诊断导出失败'); } });
+    document.getElementById('selfCheck').addEventListener('click', async ()=>{
+      try {
+        const res = await window.anningDesktop?.runSelfCheck?.();
+        if(res?.ok) setStatus('自检完成：' + (res.value?.checks?.length || 0) + ' 项', true);
+        else setStatus('自检失败');
+      } catch { setStatus('自检失败'); }
+    });
+    window.anningDesktop?.onDesktopEvent?.((payload)=>{ if(payload?.type === 'preferences-updated'){ load(); } });
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+
+/* 单一视频内核（桌面版正式实现） */
+#tabVideoDesk{display:inline-flex}
+#viewVideoDesk{padding:10px 12px 12px !important; overflow:hidden !important;}
+#viewVideoDesk.vd-active{display:block}
+#viewVideoDesk .vd-shell{
+  --vd-bottom-h:220px;
+  display:grid;
+  grid-template-columns: 280px minmax(620px,1fr) 300px;
+  grid-template-rows: minmax(0,1fr) 10px var(--vd-bottom-h);
+  gap:10px;
+  height:calc(100vh - 188px);
+  min-height:760px;
+}
+#viewVideoDesk .vd-card{
+  border:1px solid rgba(111,131,175,.16);
+  border-radius:16px;
+  background:rgba(11,18,31,.92);
+  box-shadow:0 14px 36px rgba(0,0,0,.22);
+  overflow:hidden;
+}
+#viewVideoDesk .vd-left,#viewVideoDesk .vd-right,#viewVideoDesk .vd-bottomPanel,#viewVideoDesk .vd-stageCard{display:flex;flex-direction:column;min-height:0}
+#viewVideoDesk .vd-left{grid-column:1;grid-row:1 / span 3}
+#viewVideoDesk .vd-center{grid-column:2;grid-row:1;display:grid;grid-template-columns:minmax(0,1fr) 186px minmax(0,1fr);gap:10px;min-height:0;align-items:stretch}
+#viewVideoDesk .vd-mainSplit{grid-column:2;grid-row:2;min-height:10px;border-radius:999px;background:rgba(16,28,47,.96);border:1px solid rgba(111,131,175,.18);cursor:row-resize;position:relative}
+#viewVideoDesk .vd-mainSplit::before{content:'';position:absolute;left:50%;top:50%;width:84px;height:4px;border-radius:999px;background:rgba(143,170,220,.42);transform:translate(-50%,-50%)}
+#viewVideoDesk .vd-mainSplit:hover{border-color:rgba(52,176,255,.34);background:#112039}
+#viewVideoDesk .vd-right{grid-column:3;grid-row:1 / span 3}
+#viewVideoDesk .vd-middle{display:flex;flex-direction:column;gap:10px;min-height:0}
+#viewVideoDesk .vd-middleCard{padding:12px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+#viewVideoDesk .vd-middleTitle{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#8ea6d2}
+#viewVideoDesk .vd-middleGroup{display:grid;grid-template-columns:1fr;gap:8px}
+#viewVideoDesk .vd-middleGroup .vd-btn{width:100%;justify-content:center;height:42px;font-size:14px;border-radius:12px}
+#viewVideoDesk .vd-middleHint{font-size:11px;line-height:1.5;color:#7c90b8}
+#viewVideoDesk .vd-bottom{grid-column:2;grid-row:3;display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0}
+#viewVideoDesk .vd-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(111,131,175,.14)}
+#viewVideoDesk .vd-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8ea6d2;font-weight:900}
+#viewVideoDesk .vd-tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#viewVideoDesk .vd-input,#viewVideoDesk .vd-select{
+  height:34px; border-radius:10px; border:1px solid rgba(123,144,186,.2); background:#111a2d; color:#eaf2ff;
+  padding:0 10px; font:700 12px/1 var(--sans, sans-serif); min-width:0; outline:none;
+}
+#viewVideoDesk .vd-input::placeholder{color:#6f84af}
+#viewVideoDesk .vd-btn,#viewVideoDesk .vd-mini{
+  height:34px; border-radius:10px; border:1px solid rgba(123,144,186,.2); background:#111a2d; color:#eaf2ff;
+  padding:0 12px; font:800 12px/1 var(--sans, sans-serif); cursor:pointer;
+}
+#viewVideoDesk .vd-btn:hover,#viewVideoDesk .vd-mini:hover{border-color:rgba(52,176,255,.36); background:#13223b}
+#viewVideoDesk .vd-btn.primary{background:linear-gradient(135deg,#1a5cff,#2b88ff);border-color:transparent}
+#viewVideoDesk .vd-btn.warn{background:#2a1f08;border-color:#60491b;color:#ffd977}
+#viewVideoDesk .vd-btn.danger{background:#281017;border-color:#5b2435;color:#ffc3d0}
+#viewVideoDesk .vd-pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  height:30px; padding:0 10px; border-radius:999px; border:1px solid rgba(123,144,186,.18); background:#10192b; color:#cfe0ff; font:800 11px/1 var(--sans, sans-serif);
+}
+#viewVideoDesk .vd-stage{
+  position:relative; flex:1; min-height:260px; background:#000; margin:10px; border-radius:14px; overflow:hidden; border:1px solid rgba(120,140,180,.12);
+}
+#viewVideoDesk .vd-stageInfo{
+  display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px 0 10px;
+}
+#viewVideoDesk .vd-stageTitle{font-size:12px;font-weight:900;color:#edf4ff}
+#viewVideoDesk .vd-stageMeta{font-size:11px;color:#8ea6d2}
+#viewVideoDesk .vd-layer{
+  position:absolute; overflow:hidden; background:#000; border:1px solid rgba(255,255,255,.08); border-radius:8px;
+}
+#viewVideoDesk .vd-layer.sel{outline:1px solid #34b0ff; box-shadow:0 0 0 1px rgba(52,176,255,.26)}
+#viewVideoDesk .vd-layer video,#viewVideoDesk .vd-layer img,#viewVideoDesk .vd-layer iframe,#viewVideoDesk .vd-layer embed{width:100%;height:100%;display:block;border:0;background:#000}
+#viewVideoDesk .vd-layer video,#viewVideoDesk .vd-layer img{object-fit:cover}
+#viewVideoDesk .vd-text,#viewVideoDesk .vd-clock{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-weight:900;padding:10px}
+#viewVideoDesk .vd-text{font-size:clamp(14px,2vw,34px); line-height:1.2}
+#viewVideoDesk .vd-clock{font-size:clamp(18px,2.4vw,38px)}
+#viewVideoDesk .vd-handle{position:absolute;width:10px;height:10px;background:#34b0ff;border:1px solid rgba(255,255,255,.7);border-radius:2px}
+#viewVideoDesk .vd-handle.br{right:-5px;bottom:-5px;cursor:nwse-resize}
+#viewVideoDesk .vd-handle.tr{right:-5px;top:-5px;cursor:nesw-resize}
+#viewVideoDesk .vd-handle.bl{left:-5px;bottom:-5px;cursor:nesw-resize}
+#viewVideoDesk .vd-guideX,#viewVideoDesk .vd-guideY{position:absolute;background:#34b0ff;display:none;pointer-events:none;z-index:9}
+#viewVideoDesk .vd-guideX{top:0;bottom:0;width:1px}
+#viewVideoDesk .vd-guideY{left:0;right:0;height:1px}
+#viewVideoDesk .vd-safeBox{position:absolute;left:5%;top:5%;width:90%;height:90%;border:1px dashed rgba(255,214,110,.76);display:none;pointer-events:none;z-index:8}
+#viewVideoDesk .vd-black{position:absolute;inset:0;background:#000;display:none;z-index:10}
+#viewVideoDesk .vd-hud{position:absolute;right:14px;top:12px;padding:6px 10px;border-radius:999px;background:rgba(5,9,16,.68);border:1px solid rgba(122,143,187,.24);font:700 12px/1.2 var(--sans, sans-serif);color:#edf4ff;display:none;z-index:11}
+#viewVideoDesk .vd-libList,#viewVideoDesk .vd-sceneList,#viewVideoDesk .vd-queueList,#viewVideoDesk .vd-layerList{
+  flex:1; min-height:0; overflow:auto; display:flex; flex-direction:column; gap:8px; padding:10px;
+}
+#viewVideoDesk .vd-item{
+  border:1px solid rgba(111,131,175,.16); border-radius:12px; background:#101a2e; padding:8px;
+}
+#viewVideoDesk .vd-item.sel{border-color:rgba(52,176,255,.44)}
+#viewVideoDesk .vd-itemTop{display:flex;gap:8px;align-items:flex-start}
+#viewVideoDesk .vd-thumb{
+  width:50px;height:38px;flex:0 0 auto;border-radius:8px;background:#0a101b;border:1px solid rgba(123,144,186,.16);
+  display:flex;align-items:center;justify-content:center;font-size:11px;color:#8ea6d2;overflow:hidden;
+}
+#viewVideoDesk .vd-thumb img,#viewVideoDesk .vd-thumb video{width:100%;height:100%;object-fit:cover;display:block}
+#viewVideoDesk .vd-name{font-size:12px;font-weight:900;color:#edf4ff;line-height:1.25;word-break:break-word}
+#viewVideoDesk .vd-meta{font-size:10px;color:#7e95c0;margin-top:2px}
+#viewVideoDesk .vd-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+#viewVideoDesk .vd-actions .vd-mini{height:28px;padding:0 9px;font-size:11px}
+#viewVideoDesk .vd-transport{
+  display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; padding:8px 10px; margin:0 10px 10px 10px;
+  border:1px solid rgba(111,131,175,.16); border-radius:12px; background:#0d1629;
+}
+#viewVideoDesk .vd-rowBtns{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#viewVideoDesk .vd-rightBody{padding:10px;overflow:auto;flex:1}
+#viewVideoDesk .vd-field{margin-bottom:8px}
+#viewVideoDesk .vd-field label{display:block;margin-bottom:4px;font-size:10px;color:#7f94be;text-transform:uppercase;letter-spacing:.08em}
+#viewVideoDesk .vd-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#viewVideoDesk .vd-note{font-size:11px;color:#7c90b8;line-height:1.45}
+#viewVideoDesk .vd-divider{height:1px;background:rgba(111,131,175,.14);margin:8px 0}
+#viewVideoDesk .vd-bottomPanel .vd-head{padding-bottom:8px}
+#viewVideoDesk .vd-statusbar{
+  display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:8px 10px; border-top:1px solid rgba(111,131,175,.14);
+  color:#8ea6d2; font-size:11px;
+}
+#viewVideoDesk .vd-hotkey{padding:4px 8px;border-radius:999px;background:#0d1629;border:1px solid rgba(111,131,175,.16)}
+@media (max-width:1280px){
+  #viewVideoDesk .vd-shell{grid-template-columns:260px minmax(520px,1fr) 280px}
+}
+@media (max-width:1100px){
+  #viewVideoDesk{overflow:auto !important}
+  #viewVideoDesk .vd-shell{grid-template-columns:1fr;grid-template-rows:auto auto auto auto auto;height:auto;min-height:0}
+  #viewVideoDesk .vd-left,#viewVideoDesk .vd-center,#viewVideoDesk .vd-right,#viewVideoDesk .vd-bottom,#viewVideoDesk .vd-mainSplit{grid-column:auto;grid-row:auto}
+  #viewVideoDesk .vd-center{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+  #viewVideoDesk .vd-bottom{grid-template-columns:1fr}
+  #viewVideoDesk .vd-mainSplit{display:none}
+}
+
+
+
+#viewVideoDesk .vd-captureBlock{padding:10px;border:1px solid rgba(111,131,175,.14);border-radius:12px;background:#0d1629;margin-bottom:10px}
+#viewVideoDesk .vd-captureHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+#viewVideoDesk .vd-captureTitle{font-size:11px;font-weight:900;color:#dce8ff;letter-spacing:.08em;text-transform:uppercase}
+#viewVideoDesk .vd-select{width:100%}
+#viewVideoDesk .vd-cropMask{position:fixed;inset:0;background:rgba(2,6,12,.74);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:999999}
+#viewVideoDesk .vd-cropMask.show{display:flex}
+#viewVideoDesk .vd-cropPanel{width:min(980px,calc(100vw - 48px));max-height:calc(100vh - 56px);display:flex;flex-direction:column;border:1px solid rgba(111,131,175,.2);border-radius:18px;background:#0a1222;box-shadow:0 24px 70px rgba(0,0,0,.42);overflow:hidden}
+#viewVideoDesk .vd-cropBar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(111,131,175,.14)}
+#viewVideoDesk .vd-cropMeta{font-size:11px;color:#88a2d1;line-height:1.45}
+#viewVideoDesk .vd-cropWrap{position:relative;display:flex;align-items:center;justify-content:center;padding:16px;min-height:420px;background:#02050b}
+#viewVideoDesk .vd-cropCanvas{display:block;max-width:100%;max-height:62vh;border-radius:14px;border:1px solid rgba(111,131,175,.12);background:#000}
+#viewVideoDesk .vd-cropBox{position:absolute;border:1px solid #34b0ff;background:rgba(52,176,255,.14);box-shadow:0 0 0 1px rgba(52,176,255,.2) inset;pointer-events:none}
+#viewVideoDesk .vd-cropHint{padding:10px 14px;border-top:1px solid rgba(111,131,175,.14);font-size:11px;color:#8ea6d2;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+#viewVideoDesk .vd-capBadge{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#0d1629;border:1px solid rgba(111,131,175,.16);font-size:10px;color:#9db4db}
+#viewVideoDesk .vd-layer .capMedia{position:absolute;display:block;border:0;background:#000}
+
+#viewVideoDesk .vd-backList{display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:180px;overflow:auto}
+#viewVideoDesk .vd-backItem{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:8px 10px;border-radius:10px;border:1px solid rgba(111,131,175,.14);background:#0a1324;color:#e6efff;cursor:pointer;text-align:left}
+#viewVideoDesk .vd-backItem:hover{border-color:rgba(104,168,255,.32);background:#0d172a}
+#viewVideoDesk .vd-backName{font-size:11px;font-weight:800;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+#viewVideoDesk .vd-backTime{font-size:10px;color:#88a2d1;flex:0 0 auto}
+
+#viewVideoDesk .vd-transport .vd-rowBtns:first-child .vd-btn{min-width:76px}
+#viewVideoDesk .vd-transport .vd-rowBtns:last-child .vd-btn{min-width:78px}
+#viewVideoDesk .vd-btn.danger:hover{background:#351522;border-color:#7a3148}
+
+.vd-capBadge.off{background:rgba(255,80,80,.16);border-color:rgba(255,80,80,.35);color:#ffd7d7;}
+
+@media (max-width:1180px){
+  #viewVideoDesk .vd-center{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+  #viewVideoDesk .vd-middle{order:2}
+}
+

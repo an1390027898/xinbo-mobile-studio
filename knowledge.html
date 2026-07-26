@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#168a58">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon-512.png">
+  <title>知识中心</title>
+  <style>
+    :root{--green:#168a58;--green-bright:#27a66a;--green2:#e9f7ef;--bg:#f3f6f3;--panel:#fff;--text:#202722;--muted:#6d766f;--line:#dfe6e1;--hover:#edf5ef;--danger:#c34646;--shadow:0 12px 36px rgba(27,46,34,.10)}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--text);background:var(--bg)}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+    .shell{height:100%;display:grid;grid-template-columns:230px 350px minmax(440px,1fr);background:var(--panel)}
+    .nav,.notes{min-width:0;border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}.nav{background:linear-gradient(180deg,#f8fbf8,#f1f6f2)}.reader{min-width:0;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(180deg,#fff,#fbfdfb)}
+    .brand{padding:22px 18px 14px}.brand h1{font-size:20px;margin:0;letter-spacing:.2px}.brand small{display:block;color:var(--muted);margin-top:3px}.newBtn{margin:0 14px 13px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green-bright));color:#fff;padding:11px 12px;font-weight:750;box-shadow:0 7px 18px rgba(22,138,88,.2)}.newBtn:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(22,138,88,.25)}
+    .navScroll{overflow:auto;padding:0 9px 18px}.navGroup{margin:13px 0}.navLabel{padding:5px 10px;color:#87918a;font-size:10px;letter-spacing:.8px;font-weight:800;text-transform:uppercase}.navItem{width:100%;border:1px solid transparent;background:transparent;text-align:left;padding:9px 10px;border-radius:10px;color:#38423b;display:flex;gap:9px;align-items:center;transition:.16s}.navItem:hover{background:#fff;border-color:var(--line)}.navItem.active{background:var(--green2);border-color:#cfe7d8;color:#126f45;font-weight:720}.navItem .count{margin-left:auto;color:var(--muted);font-size:11px;background:rgba(255,255,255,.75);padding:0 6px;border-radius:99px}
+    .treeItem{padding-left:calc(10px + var(--depth,0)*14px)}.navBottom{margin-top:auto;padding:10px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}.vaultPath{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .listHead{padding:14px;border-bottom:1px solid var(--line)}.listTitleRow{display:flex;align-items:center;gap:8px;margin-bottom:10px}.listTitle{font-size:18px;font-weight:750;flex:1}.search{width:100%;border:1px solid var(--line);background:#f7f8f7;border-radius:10px;padding:9px 11px;outline:none}.search:focus{border-color:#8bceb0;background:#fff}
+    .filters{display:flex;gap:7px;margin-top:8px}.filters select,.miniBtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 8px;color:#555}.resultMeta{padding:8px 14px;color:var(--muted);font-size:12px;border-bottom:1px solid var(--line)}
+    .noteList{overflow:auto;flex:1}.noteCard{padding:13px 15px;border-bottom:1px solid #eef0ed;cursor:pointer}.noteCard:hover,.noteCard.active{background:#f1f8f4}.noteTop{display:flex;gap:8px}.noteTitle{font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.star{color:#e3a72f}.excerpt{color:#6d736e;font-size:12px;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.noteFoot{display:flex;gap:8px;color:#939994;font-size:10px;margin-top:7px}.tag{background:#edf4ef;color:#47805d;border-radius:99px;padding:1px 6px}
+    .readerTop{height:58px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 16px}.readerPath{flex:1;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;color:#454a46}.btn:hover{border-color:#90cbae}.btn.primary{background:var(--green);border-color:var(--green);color:white}.btn.danger{color:var(--danger)}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .doc{flex:1;overflow:auto}.docInner{max-width:900px;margin:0 auto;padding:34px 7vw 80px}.docTitle{font-size:30px;line-height:1.25;margin:0 0 10px;border:0;width:100%;font-weight:760;color:var(--text);outline:none}.docMeta{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-bottom:25px}
+    .markdown{font-size:15px;line-height:1.8}.markdown h1{font-size:28px}.markdown h2{font-size:21px;margin-top:30px}.markdown h3{font-size:17px;margin-top:24px}.markdown blockquote{border-left:4px solid #94c9aa;margin:16px 0;padding:8px 16px;background:#f4faf6;color:#586059}.markdown code{background:#f1f3f1;padding:2px 5px;border-radius:4px}.markdown pre{background:#252a27;color:#e9efe9;padding:15px;border-radius:10px;overflow:auto}.markdown a{color:#218657;text-decoration:none}.markdown .wikilink{color:#218657;background:#edf8f1;padding:1px 4px;border-radius:4px;cursor:pointer}.markdown img{max-width:100%}.markdown li{margin:4px 0}
+    .editor{width:100%;min-height:calc(100vh - 180px);resize:none;border:0;outline:0;font:14px/1.75 ui-monospace,SFMono-Regular,Menlo,monospace;color:#303630;background:#fff}
+    .sideInfo{border-top:1px solid var(--line);padding:14px 7vw 20px;background:#fbfcfb}.sideInfo h4{margin:0 0 8px}.linkPills{display:flex;gap:6px;flex-wrap:wrap}.linkPill{border:0;background:var(--green2);color:#287249;border-radius:99px;padding:5px 9px}
+    .empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);padding:30px}.empty strong{display:block;color:var(--text);font-size:20px;margin-bottom:8px}
+    .dashboard{padding:30px;overflow:auto;height:100%;max-width:1500px;width:100%;margin:0 auto}.dashTitle{font-size:27px;font-weight:780;letter-spacing:-.3px}.dashLead{color:var(--muted);margin:5px 0 0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:18px 0}.stat{appearance:none;text-align:left;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:0 5px 18px rgba(29,68,43,.045);transition:.16s}.stat:hover,.dashCard[data-card-action]:hover{border-color:#a9d2b7;box-shadow:0 9px 25px rgba(29,68,43,.09);transform:translateY(-1px)}.stat b{display:block;font-size:27px;color:#167b4d}.dashGrid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.dashCard{border:1px solid var(--line);border-radius:15px;padding:16px;background:#fff;box-shadow:0 5px 18px rgba(29,68,43,.045);transition:.16s}.dashCard[data-card-action]{cursor:pointer}.dashCard h3{margin:0}.cardHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.cardHead small{color:var(--muted)}.dashLink{display:flex;align-items:center;gap:9px;border:0;background:transparent;text-align:left;width:100%;padding:9px;border-radius:9px;color:var(--text)}.dashLink:hover{background:var(--hover)}.dashLinkMeta{margin-left:auto;color:var(--muted);font-size:11px}.taskRow{display:grid;grid-template-columns:28px minmax(0,1fr);gap:7px;align-items:start;padding:7px 3px;border-bottom:1px solid #edf1ee}.taskRow:last-child{border-bottom:0}.taskCheck{width:24px;height:24px;border:1.5px solid #9bc6aa;border-radius:7px;background:#fff;color:#157345;padding:0;font-weight:900;font-size:16px;line-height:1}.taskCheck:hover{background:var(--green2)}.taskCheck.done{border-color:transparent;background:var(--green2)}.taskCheck.done+.taskOpen{text-decoration:line-through;color:var(--muted)}.taskOpen{border:0;background:transparent;text-align:left;padding:2px 5px;border-radius:7px;color:var(--text)}.taskOpen:hover{background:var(--hover)}.taskSource{display:block;color:var(--muted);font-size:11px;margin-top:2px;text-decoration:none}.quickGuide{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0 2px}.guidePill{border:1px solid #d5e7db;background:#f4faf6;color:#3e6650;border-radius:99px;padding:6px 10px;font-size:12px}
+    .todayHero{display:grid;grid-template-columns:150px 1fr;gap:18px;border:1px solid #dce9df;border-radius:17px;padding:18px;background:linear-gradient(135deg,#f0faf4,#fff9ea);box-shadow:var(--shadow)}.todayDate{text-align:center;border-right:1px solid #dce9df}.todayDay{font-size:48px;line-height:1;font-weight:800;color:#17794d}.todayMonth{color:var(--muted);margin-top:7px}.todayWeek{font-size:16px;font-weight:700;margin-top:5px}.lunar{font-size:16px;font-weight:720}.almanac{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.almanacItem{border-radius:10px;padding:9px 11px;background:rgba(255,255,255,.72)}.almanacItem b{color:#1d8051;margin-right:7px}.almanacItem.avoid b{color:#b56a32}.reminderLine{display:flex;gap:9px;align-items:flex-start;padding:9px 7px;border-bottom:1px solid #edf0ed}.reminderLine:last-child{border-bottom:0}.reminderDate{min-width:72px;color:#1d8051;font-weight:700}.homeHint{color:var(--muted);margin:9px 0 17px}
+    .assocGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}.assocCard{border:1px solid var(--line);border-radius:13px;background:#fff;overflow:hidden}.assocCard h3{margin:0;padding:14px 15px;border-bottom:1px solid var(--line)}.assocList{display:grid}.assocItem{padding:13px 15px;border-bottom:1px solid #eef0ed}.assocItem:last-child{border-bottom:0}.assocTop{display:flex;gap:10px;align-items:center}.assocName{font-weight:720;flex:1}.assocMeta{color:var(--muted);font-size:12px;margin:5px 0 9px}.assocEmpty{padding:24px 15px;color:var(--muted);text-align:center}
+    .graphWrap{height:100%;display:flex;flex-direction:column;padding:20px}.graphStats{color:var(--muted);margin-bottom:10px}.graph{flex:1;border:1px solid var(--line);border-radius:14px;background:radial-gradient(circle at center,#fff,#f3f7f4);position:relative;overflow:hidden}.node{position:absolute;transform:translate(-50%,-50%);border:1px solid #91caa8;background:#fff;border-radius:99px;padding:5px 9px;font-size:11px;box-shadow:0 3px 10px #d7e7dc;cursor:pointer;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.edge{position:absolute;height:1px;background:#c8d9ce;transform-origin:left center}
+    dialog{border:1px solid var(--line);border-radius:15px;padding:0;width:min(620px,calc(100vw - 30px));box-shadow:0 24px 80px rgba(0,0,0,.24)}dialog::backdrop{background:rgba(25,30,27,.4)}.dlgHead{padding:15px 18px;border-bottom:1px solid var(--line);font-weight:750}.form{padding:17px;display:grid;gap:12px}.form label{display:grid;gap:5px;font-size:12px;font-weight:650}.form input,.form select,.form textarea{border:1px solid var(--line);border-radius:9px;padding:9px}.form textarea{min-height:180px;resize:vertical}.dlgActions{display:flex;justify-content:flex-end;gap:8px;padding:0 17px 17px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#252a27;color:#fff;border-radius:99px;padding:9px 14px;opacity:0;pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1}
+    .todayHero[data-card-action]{cursor:pointer;transition:.16s}.todayHero[data-card-action]:hover{border-color:#a9d2b7;box-shadow:0 9px 25px rgba(29,68,43,.09);transform:translateY(-1px)}
+    @media(max-width:1050px){.shell{grid-template-columns:190px 310px 1fr}.stats{grid-template-columns:1fr 1fr}}@media(max-width:760px){.shell{grid-template-columns:1fr}.nav{display:none}.notes{display:none}.reader{display:flex}.docInner{padding:22px}}
+  </style>
+  <style id="knowledge-mobile-full">
+    @media(max-width:760px){
+      html,body{height:auto;min-height:100%}
+      .shell{height:auto;min-height:100vh;display:flex;flex-direction:column}
+      .nav{display:flex;min-height:260px;max-height:42vh;border-right:0;border-bottom:1px solid var(--line)}
+      .brand{padding:14px 14px 8px}.newBtn{margin-bottom:8px}
+      .navScroll{display:flex;gap:8px;overflow:auto;padding:4px 10px 12px}
+      .navGroup{flex:0 0 210px;margin:0}.navBottom{display:none}
+      .notes{display:flex;min-height:280px;max-height:42vh;border-right:0;border-bottom:1px solid var(--line)}
+      .reader{display:flex;min-height:70vh;overflow:visible}
+      .doc{overflow:visible}.editor{min-height:55vh}
+      .dashboard{padding:18px 12px}.stats,.dashGrid,.assocGrid{grid-template-columns:1fr}
+      .todayHero{grid-template-columns:82px 1fr;padding:12px;gap:12px}
+      .todayDay{font-size:38px}.docInner{padding:20px 14px 70px}
+      .readerTop{height:auto;min-height:58px;flex-wrap:wrap;padding:10px}
+      body{padding-bottom:calc(68px + env(safe-area-inset-bottom))}
+      .knowledgeQuickDock{display:grid!important}
+    }
+    .knowledgeQuickDock{display:none;position:fixed;z-index:9999;left:8px;right:8px;bottom:calc(7px + env(safe-area-inset-bottom));grid-template-columns:1fr 1.3fr 1fr;gap:7px;padding:7px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.94);box-shadow:0 12px 34px rgba(20,35,25,.18);backdrop-filter:blur(16px)}
+    .knowledgeQuickDock button{min-height:46px;border:0;border-radius:12px;background:#edf4ef;color:#315d43;font-weight:750}
+    .knowledgeQuickDock .playerQuick{background:var(--green);color:#fff}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="nav">
+    <div class="brand"><h1>知识中心</h1><small>本地知识工作台</small></div>
+    <button class="newBtn" id="newNote">＋ 新建笔记</button>
+    <div class="navScroll">
+      <div class="navGroup">
+        <div class="navLabel">知识管理系统</div>
+        <button class="navItem active" data-view="home">🏠 首页</button>
+        <button class="navItem" data-view="all">📝 全部笔记 <span class="count" id="allCount">0</span></button>
+        <button class="navItem" data-view="recent">🕘 最近使用</button>
+        <button class="navItem" data-view="favorite">⭐ 收藏</button>
+        <button class="navItem" data-view="tasks">☑️ 任务中心</button>
+        <button class="navItem" data-view="graph">🕸️ 知识关系</button>
+      </div>
+      <div class="navGroup">
+        <div class="navLabel">播控业务协同系统</div>
+        <button class="navItem" data-view="business-overview">🔗 关联总览</button>
+        <button class="navItem" data-view="business-bookings">📅 档期关联</button>
+        <button class="navItem" data-view="business-customers">👥 客户关联</button>
+        <button class="navItem" data-view="business-projects">🗂️ 项目知识</button>
+      </div>
+      <div class="navGroup"><div class="navLabel">知识库目录</div><div id="folderTree"></div></div>
+      <div class="navGroup">
+        <div class="navLabel">工具</div>
+        <button class="navItem" id="healthBtn">🩺 知识库体检</button>
+        <button class="navItem" id="businessBtn">🎙️ 主持业务沉淀</button>
+        <button class="navItem" id="backupBtn">🛡️ 创建备份</button>
+        <button class="navItem" id="openFolderBtn">📂 打开文件夹</button>
+        <button class="navItem" id="settingsBtn">⚙️ 知识库设置</button>
+      </div>
+    </div>
+    <div class="navBottom"><div id="modeLabel">本地知识库</div><div class="vaultPath" id="vaultPath"></div></div>
+  </aside>
+  <section class="notes">
+    <div class="listHead">
+      <div class="listTitleRow"><div class="listTitle" id="listTitle">全部笔记</div><button class="miniBtn" id="refreshBtn">↻</button></div>
+      <input class="search" id="search" placeholder="搜索标题、正文和标签">
+      <div class="filters"><select id="sort"><option value="mtime">最近更新</option><option value="ctime">最近创建</option><option value="title">标题排序</option></select><select id="tagFilter"><option value="">全部标签</option></select></div>
+    </div>
+    <div class="resultMeta" id="resultMeta">正在载入…</div>
+    <div class="noteList" id="noteList"></div>
+  </section>
+  <main class="reader" id="reader">
+    <div class="empty"><div><strong>欢迎使用知识中心</strong>无需安装 Obsidian，也可以创建、编辑和整理本地知识。</div></div>
+  </main>
+</div>
+
+<dialog id="noteDialog"><div class="dlgHead">新建笔记</div><form id="noteForm"><div class="form"><label>保存位置<select id="newFolder"></select></label><label>标题<input id="newTitle" required maxlength="120"></label><label>标签（用逗号分隔）<input id="newTags" placeholder="例如：婚礼, 客户沟通, 待复盘"><small style="color:var(--muted)">标签用于分类和筛选，创建后也能在笔记顶部随时修改。</small></label><label>内容<textarea id="newContent" placeholder="普通内容直接输入；待办清单可写：- [ ] 联系客户"></textarea></label></div><div class="dlgActions"><button class="btn" type="button" data-close="noteDialog">取消</button><button class="btn primary">创建</button></div></form></dialog>
+<dialog id="taskDialog"><div class="dlgHead">＋ 新建待办</div><form id="taskForm"><div class="form"><label>待办内容<input id="taskText" required maxlength="200" autocomplete="off" placeholder="例如：联系新人确认婚礼流程"></label><small style="color:var(--muted)">创建后会立即进入近期待办；首页最多显示 7 项，更多事项可在任务中心查看。</small></div><div class="dlgActions"><button class="btn" type="button" data-close="taskDialog">取消</button><button class="btn primary">创建待办</button></div></form></dialog>
+<dialog id="moveDialog"><div class="dlgHead">移动笔记</div><div class="form"><label>目标文件夹<select id="moveFolder"></select></label></div><div class="dlgActions"><button class="btn" data-close="moveDialog">取消</button><button class="btn primary" id="confirmMove">移动</button></div></dialog>
+<dialog id="businessDialog"><div class="dlgHead">主持业务沉淀</div><form id="businessForm"><div class="form"><label>记录类型<select id="businessType"><option>主持台词</option><option>婚礼项目复盘</option><option>音乐经验</option><option>自媒体素材</option><option>客户沟通经验</option></select></label><label>标题<input id="businessTitle" required></label><label>内容<textarea id="businessContent" placeholder="默认自动隐藏手机号、邮箱和软件密钥"></textarea></label><label><span><input type="checkbox" id="allowSensitive"> 明确允许保留敏感信息（不推荐）</span></label></div><div class="dlgActions"><button class="btn" type="button" data-close="businessDialog">取消</button><button class="btn primary">保存到知识库</button></div></form></dialog>
+<dialog id="settingsDialog"><div class="dlgHead">知识库设置</div><div class="form"><button class="btn primary" id="useBuiltin">使用内置知识库（推荐）</button><button class="btn" id="chooseVault">连接现有 Obsidian / Markdown 文件夹</button><div id="settingsInfo"></div></div><div class="dlgActions"><button class="btn" data-close="settingsDialog">关闭</button></div></dialog>
+<dialog id="reportDialog"><div class="dlgHead" id="reportTitle">报告</div><div class="form"><div id="reportContent"></div></div><div class="dlgActions"><button class="btn" data-close="reportDialog">关闭</button></div></dialog>
+<dialog id="tagDialog"><div class="dlgHead">编辑笔记标签</div><div class="form"><label>标签（用逗号分隔）<input id="editTags" placeholder="例如：档期, 主持台词, 重要"></label><div style="color:var(--muted);font-size:12px">保存后，标签会显示在笔记顶部，也可通过左侧列表上方的“全部标签”筛选。</div></div><div class="dlgActions"><button class="btn" data-close="tagDialog">取消</button><button class="btn primary" id="saveTags">保存标签</button></div></dialog>
+<div class="toast" id="toast"></div>
+<nav class="knowledgeQuickDock" aria-label="知识库快捷导航">
+  <button type="button" id="quickBackHome">⌂ 首页</button>
+  <button type="button" class="playerQuick" id="quickOpenPlayer">🎵 播放器</button>
+  <button type="button" id="quickNewNote">＋ 笔记</button>
+</nav>
+
+<script src="./mobile-adapter.js"></script>
+<script src="./vendor/lunar-javascript/lunar.js"></script>
+<script>
+const api=window.anningDesktop,$=id=>document.getElementById(id);
+if(!api){
+  document.body.innerHTML='<div class="empty"><div><strong>知识中心已打开</strong><p>浏览器不能直接读写电脑上的知识库文件。请从信伯礼控桌面程序进入，或安装桌面版后使用完整功能。</p><button class="btn" onclick="window.close()">关闭网页</button></div></div>';
+  throw new Error('知识中心需要桌面程序提供本地文件接口');
+}
+let notes=[],config=null,current=null,currentMtime=0,editing=false,activeView='home',activeFolder='',searchTimer=null,signature='',viewEpoch=0;
+$('quickBackHome').onclick=()=>{location.href='./index.html'};
+$('quickOpenPlayer').onclick=()=>{location.href='./index.html#music'};
+$('quickNewNote').onclick=()=>{$('newNote').click()};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el.t);el.t=setTimeout(()=>el.classList.remove('show'),2300)}
+function folders(){return [...new Set(notes.map(n=>n.folder).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-CN'))}
+function formatDate(ms){return new Date(ms).toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'})}
+function renderMarkdown(raw=''){
+  let text=esc(raw.replace(/^---[\s\S]*?---\s*/,''));
+  text=text.replace(/```([\s\S]*?)```/g,'<pre><code>$1</code></pre>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|([^\]]+))?\]\]/g,(_,p,l)=>`<span class="wikilink" data-link="${esc(p)}">${esc(l||p)}</span>`)
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^\s*-\s+\[x\]\s+(.+)$/gim,'<div>☑ $1</div>').replace(/^\s*-\s+\[ \]\s+(.+)$/gim,'<div>☐ $1</div>')
+    .replace(/^\s*-\s+(.+)$/gm,'<div>• $1</div>').replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>');
+  return `<p>${text}</p>`;
+}
+async function loadNotes(query=$('search').value){
+  const res=await api.knowledgeListNotes(query);if(!res?.ok){toast(res?.reason||'读取失败');return}
+  notes=res.items||[];signature=res.signature;config=await api.knowledgeGetConfig();$('vaultPath').textContent=config.vaultPath;$('modeLabel').textContent=config.mode==='builtin'?'内置知识库 · 无需 Obsidian':(config.hasObsidian?'已连接 Obsidian':'外部 Markdown 知识库');$('allCount').textContent=res.total;
+  renderFolders();renderTags();applyView();
+}
+function renderFolders(){
+  const fs=folders();$('folderTree').innerHTML=fs.map(f=>`<button class="navItem treeItem" style="--depth:${f.split('/').length-1}" data-folder="${esc(f)}">📁 ${esc(f.split('/').pop())}<span class="count">${notes.filter(n=>n.folder===f).length}</span></button>`).join('');
+  $('newFolder').innerHTML=$('moveFolder').innerHTML=fs.map(f=>`<option>${esc(f)}</option>`).join('');
+  $('folderTree').querySelectorAll('[data-folder]').forEach(b=>b.onclick=()=>selectFolder(b.dataset.folder));
+}
+function renderTags(){const tags=[...new Set(notes.flatMap(n=>n.tags||[]))].sort();const value=$('tagFilter').value;$('tagFilter').innerHTML='<option value="">全部标签</option>'+tags.map(t=>`<option>${esc(t)}</option>`).join('');$('tagFilter').value=value}
+function selectFolder(folder){activeView='folder';activeFolder=folder;applyView()}
+function setActive(){
+  document.querySelectorAll('.navItem').forEach(b=>{
+    const isView=Boolean(b.dataset.view)&&b.dataset.view===activeView;
+    const isFolder=Boolean(b.dataset.folder)&&activeView==='folder'&&b.dataset.folder===activeFolder;
+    b.classList.toggle('active',Boolean(isView||isFolder));
+  });
+}
+function filtered(){
+  let list=[...notes];if(activeView==='favorite')list=list.filter(n=>n.favorite);if(activeView==='recent')list=(config.recent||[]).map(p=>notes.find(n=>n.path===p)).filter(Boolean);if(activeView==='tasks')list=list.filter(n=>(n.tasks||[]).length);if(activeView==='folder')list=list.filter(n=>n.folder===activeFolder);
+  const tag=$('tagFilter').value;if(tag)list=list.filter(n=>(n.tags||[]).includes(tag));const sort=$('sort').value;list.sort(sort==='title'?(a,b)=>a.title.localeCompare(b.title,'zh-CN'):(a,b)=>b[sort]-a[sort]);return list
+}
+function renderList(list=filtered()){
+  $('resultMeta').textContent=`${list.length} 篇笔记`;
+  $('noteList').innerHTML=list.length?list.map(n=>`<article class="noteCard ${current?.path===n.path?'active':''}" data-path="${esc(n.path)}"><div class="noteTop"><div class="noteTitle">${esc(n.title)}</div>${n.favorite?'<span class="star">★</span>':''}</div><div class="excerpt">${esc(n.excerpt||'暂无摘要')}</div><div class="noteFoot"><span>${formatDate(n.mtime)}</span><span>${esc(n.folder||'根目录')}</span>${(n.tags||[]).slice(0,2).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')}</div></article>`).join(''):'<div class="empty">没有匹配的笔记</div>';
+  $('noteList').querySelectorAll('[data-path]').forEach(el=>el.onclick=()=>openNote(el.dataset.path));
+}
+function applyView(){
+  const epoch=++viewEpoch;setActive();
+  if(activeView==='home')return renderHome(epoch);
+  if(activeView==='graph')return renderGraph(epoch);
+  if(activeView.startsWith('business-'))return renderAssociations(epoch,activeView.replace('business-',''));
+  const names={all:'全部笔记',recent:'最近使用',favorite:'收藏笔记',tasks:'任务中心'};
+  $('listTitle').textContent=names[activeView]||activeFolder;const list=filtered();renderList(list);renderCollectionView(activeView,list)
+}
+function renderCollectionView(view,list){
+  const meta={
+    all:['全部笔记','集中查看、搜索和打开知识库中的全部内容。','📝'],
+    recent:['最近使用','继续处理最近打开过的笔记。','🕘'],
+    favorite:['收藏笔记','集中管理被标记为重要的知识。','⭐'],
+    tasks:['任务中心','从所有笔记中汇总尚未完成的任务。','☑️'],
+    folder:[activeFolder||'目录','查看当前知识目录下的全部笔记。','📁']
+  }[view]||['知识列表','选择左侧笔记，在这里阅读和编辑。','📝'];
+  const allTasks=view==='tasks'?list.flatMap(n=>(n.tasks||[]).map(t=>({...t,path:n.path,title:n.title}))):[];
+  const openTasks=allTasks.filter(t=>!t.done),endedTasks=allTasks.filter(t=>t.done);
+  const body=view==='tasks'
+    ? `<section class="dashCard"><div class="cardHead"><h3>待办事项</h3><small>${openTasks.length} 项 · 点空白方框完成</small></div>${openTasks.map(taskRow).join('')||'<div class="assocEmpty">目前没有未完成任务。</div>'}</section><section class="dashCard" style="margin-top:15px"><div class="cardHead"><h3>✅ 已结束</h3><small>${endedTasks.length} 项 · 点绿色勾可恢复</small></div>${endedTasks.map(taskRow).join('')||'<div class="assocEmpty">还没有已结束事项。</div>'}</section>`
+    : `<section class="dashCard"><div class="cardHead"><h3>内容列表 · ${list.length}</h3></div>${dashLinks(list.slice(0,30))}</section>`;
+  $('reader').innerHTML=`<div class="dashboard"><div class="dashTitle">${meta[2]} ${esc(meta[0])}</div><p class="dashLead">${esc(meta[1])}</p>${body}</div>`;bindReaderLinks();bindTaskActions()
+}
+function getTodayInfo(){
+  const now=new Date();let lunar='农历日期',good=['整理资料','制定计划','沟通确认'],avoid=['仓促决定','遗漏确认'],extra='';
+  try{
+    if(window.Solar){const solar=window.Solar.fromYmd(now.getFullYear(),now.getMonth()+1,now.getDate()),ln=solar.getLunar();lunar=`农历${ln.getMonthInChinese()}月${ln.getDayInChinese()}`;good=ln.getDayYi().slice(0,6);avoid=ln.getDayJi().slice(0,6);extra=`${ln.getYearInGanZhi()}年 ${ln.getMonthInGanZhi()}月 ${ln.getDayInGanZhi()}日 · ${ln.getDayTianShen()}（${ln.getDayTianShenLuck()}）`;}
+    else lunar=new Intl.DateTimeFormat('zh-CN-u-ca-chinese',{year:'numeric',month:'long',day:'numeric'}).format(now);
+  }catch(_){}
+  return {
+    day:String(now.getDate()).padStart(2,'0'),
+    month:`${now.getFullYear()}年${now.getMonth()+1}月`,
+    week:new Intl.DateTimeFormat('zh-CN',{weekday:'long'}).format(now),
+    full:new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric'}).format(now),
+    lunar,extra,good,avoid
+  };
+}
+async function renderHome(epoch){
+  $('listTitle').textContent='今日提醒';renderList(notes.slice(0,20));const [d,records]=await Promise.all([api.knowledgeGetDashboard(),api.knowledgeGetBusinessRecords()]);
+  if(!d?.ok)return;
+  if(epoch!==viewEpoch||activeView!=='home')return;
+  const today=getTodayInfo(),start=new Date();start.setHours(0,0,0,0);const end=new Date(start);end.setDate(end.getDate()+30);
+  const upcoming=(records?.bookings||[]).filter(item=>{const date=new Date(`${item.date}T00:00:00`);return Number.isFinite(date.getTime())&&date>=start&&date<=end}).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
+  const taskHtml=(d.tasks||[]).filter(t=>!t.done).slice(0,7).map(taskRow).join('')||'<div class="assocEmpty">近期没有未完成待办。</div>';
+  const bookingHtml=upcoming.map(item=>`<div class="reminderLine"><span class="reminderDate">${esc(item.date.slice(5))}</span><span><b>${esc(item.clientName||'未命名档期')}</b><br><span style="color:var(--muted)">${esc([item.eventType,item.venue,item.status].filter(Boolean).join(' · ')||'待补充活动信息')}</span></span></div>`).join('')||'<div class="assocEmpty">未来 30 天暂无档期提醒。</div>';
+  const tagCounts=new Map();notes.forEach(n=>(n.tags||[]).forEach(tag=>tagCounts.set(tag,(tagCounts.get(tag)||0)+1)));
+  const tagHtml=[...tagCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,12).map(([tag,count])=>`<button class="guidePill" data-home-tag="${esc(tag)}">#${esc(tag)} · ${count}</button>`).join('')||'<div class="assocEmpty">还没有标签。打开任意笔记，点击顶部“标签”即可添加。</div>';
+  $('reader').innerHTML=`<div class="dashboard"><div class="dashTitle">今天的知识工作台</div><p class="dashLead">先处理提醒，再继续最近的笔记。未完成显示空白方框，完成后显示绿色勾选。</p><div class="quickGuide"><span class="guidePill">□ 空白：尚未完成</span><span class="guidePill">✅ 绿色：已经完成</span><span class="guidePill">📝 文字：打开来源笔记</span><span class="guidePill">🏷 标签：在笔记顶部编辑</span></div><div class="todayHero"><div class="todayDate"><div class="todayDay">${today.day}</div><div class="todayMonth">${today.month}</div><div class="todayWeek">${today.week}</div></div><div><div class="lunar">${esc(today.lunar)}</div><div class="homeHint">${esc(today.extra||today.full)} · 离线黄历与今日提醒</div><div class="almanac"><div class="almanacItem"><b>宜</b>${today.good.map(esc).join(' · ')}</div><div class="almanacItem avoid"><b>忌</b>${today.avoid.map(esc).join(' · ')}</div></div></div></div><div class="stats"><button class="stat" data-home-action="all"><b>${d.stats.notes}</b>全部笔记</button><button class="stat" data-home-action="inbox"><b>${d.stats.inbox}</b>待整理</button><button class="stat" data-home-action="tasks"><b>${d.stats.openTasks}</b>未完成任务</button><button class="stat" data-home-action="schedule"><b>${upcoming.length}</b>近期档期</button></div><div class="dashGrid"><section class="dashCard" data-card-action="tasks"><div class="cardHead"><h3>☑️ 近期待办</h3><button class="btn primary" id="addTaskBtn">＋ 新建待办</button></div>${taskHtml}</section><section class="dashCard" data-card-action="schedule"><div class="cardHead"><h3>📅 未来 30 天档期</h3><small>${upcoming.length} 项</small></div>${bookingHtml}</section><section class="dashCard" data-card-action="recent"><div class="cardHead"><h3>🕘 最近使用</h3><small>逐条打开</small></div>${dashLinks(d.recent,true)}</section><section class="dashCard" data-card-action="tags"><div class="cardHead"><h3>🏷 常用标签</h3><small>快速筛选</small></div><div class="quickGuide">${tagHtml}</div></section><section class="dashCard" data-card-action="inbox"><div class="cardHead"><h3>📥 待整理收件箱</h3><small>${d.inbox?.length||0} 篇</small></div>${dashLinks(d.inbox,true)}</section></div></div>`;bindReaderLinks();bindTaskActions();bindHomeTags();bindHomeCards();$('addTaskBtn').onclick=openTaskDialog
+}
+function openTaskDialog(){$('taskText').value='';$('taskDialog').showModal();setTimeout(()=>$('taskText').focus(),0)}
+function taskRow(t){const done=!!t.done;return `<div class="taskRow"><button class="taskCheck ${done?'done':''}" data-task-path="${esc(t.path)}" data-task-index="${Number(t.taskIndex)}" data-task-done="${done?'1':'0'}" title="${done?'取消完成并恢复到待办':'标记为已完成'}">${done?'✅':'□'}</button><button class="taskOpen" data-open="${esc(t.path)}">${esc(t.text)}<span class="taskSource">来自：${esc(t.title||t.path)}</span></button></div>`}
+function dashLinks(list=[],showMeta=false){return list.map(n=>`<button class="dashLink" data-open="${esc(n.path)}"><span>📝</span><span>${esc(n.title)}</span>${showMeta?`<span class="dashLinkMeta">${esc(n.folder||'')}</span>`:''}</button>`).join('')||'<span style="color:var(--muted)">暂无内容</span>'}
+function bindTaskActions(){
+  document.querySelectorAll('[data-task-path]').forEach(button=>button.onclick=async e=>{
+    e.preventDefault();e.stopPropagation();button.disabled=true;
+    const wasDone=button.dataset.taskDone==='1',nextDone=!wasDone;
+    button.textContent=nextDone?'✅':'□';button.classList.toggle('done',nextDone);
+    const result=await api.knowledgeToggleTask({relativePath:button.dataset.taskPath,taskIndex:Number(button.dataset.taskIndex),done:nextDone});
+    if(!result?.ok){button.disabled=false;button.textContent=wasDone?'✅':'□';button.classList.toggle('done',wasDone);return toast(result?.reason||'更新待办失败')}
+    button.dataset.taskDone=nextDone?'1':'0';
+    const note=notes.find(n=>n.path===button.dataset.taskPath),task=note?.tasks?.find(t=>Number(t.taskIndex)===Number(button.dataset.taskIndex));
+    if(task)task.done=nextDone;
+    toast(nextDone?'已完成，已移入“已结束” ✅':'已取消完成，已恢复到待办');
+    applyView();
+  });
+}
+function bindHomeTags(){
+  document.querySelectorAll('[data-home-tag]').forEach(button=>button.onclick=()=>{
+    $('tagFilter').value=button.dataset.homeTag;activeView='all';activeFolder='';applyView();
+  });
+}
+function runHomeAction(action){
+  if(action==='schedule'){toast('正在打开档期管理…');api.navigateTo?.('schedule');return}
+  if(action==='inbox'){toast('已进入待整理收件箱');selectFolder('00-收件箱');return}
+  if(action==='tags'){toast('请选择一个标签进行筛选');return}
+  activeView=action==='recent'?'recent':action==='tasks'?'tasks':'all';activeFolder='';toast(action==='recent'?'已进入最近使用':action==='tasks'?'已进入任务中心':'已进入全部笔记');applyView();
+}
+function bindHomeCards(){
+  document.querySelectorAll('[data-home-action]').forEach(button=>button.onclick=()=>runHomeAction(button.dataset.homeAction));
+  document.querySelectorAll('[data-card-action]').forEach(card=>card.onclick=e=>{
+    if(e.target.closest('button,input,select,a'))return;
+    runHomeAction(card.dataset.cardAction);
+  });
+  document.querySelectorAll('.cardHead').forEach(head=>head.onclick=e=>{
+    const card=e.currentTarget.closest('[data-card-action]');if(!card)return;
+    e.stopPropagation();runHomeAction(card.dataset.cardAction);
+  });
+}
+async function renderAssociations(epoch,mode='overview'){
+  const projectNotes=notes.filter(n=>n.path.includes('50-工作项目/Simple Studio/关联项目/'));
+  const titles={overview:'关联总览',bookings:'档期关联',customers:'客户关联',projects:'项目知识'};
+  $('listTitle').textContent=titles[mode]||'业务关联';renderList(projectNotes);
+  const [records,linksRes]=await Promise.all([api.knowledgeGetBusinessRecords(),api.knowledgeListBusinessLinks()]);
+  if(!records?.ok){toast(records?.reason||'读取业务资料失败');return}
+  if(epoch!==viewEpoch||activeView!==`business-${mode}`)return;
+  const links=new Map((linksRes?.items||[]).map(item=>[`${item.sourceType}:${item.sourceId}`,item]));
+  const itemHtml=(item,type)=>{
+    const linked=links.get(`${type}:${item.id}`),name=type==='booking'?(item.clientName||'未命名档期'):(item.name||'未命名客户');
+    const meta=type==='booking'
+      ? [item.date,item.eventType,item.venue,item.status].filter(Boolean).join(' · ')
+      : [item.eventType,item.venue,item.status,item.bookingCount?`${item.bookingCount} 个档期`:''].filter(Boolean).join(' · ');
+    return `<div class="assocItem"><div class="assocTop"><div class="assocName">${esc(name)}</div><span class="tag">${type==='booking'?'档期':'客户'}</span></div><div class="assocMeta">${esc(meta||'暂无补充信息')}</div>${linked?`<button class="btn" data-open="${esc(linked.notePath)}">打开知识项目</button>`:`<button class="btn primary" data-link-type="${type}" data-link-id="${esc(item.id)}">创建关联项目</button>`}</div>`;
+  };
+  const bookings=[...(records.bookings||[])].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const customers=[...(records.customers||[])].sort((a,b)=>String(a.name).localeCompare(String(b.name),'zh-CN'));
+  const bookingCard=`<section class="assocCard"><h3>档期系统 · ${bookings.length}</h3><div class="assocList">${bookings.map(item=>itemHtml(item,'booking')).join('')||'<div class="assocEmpty">还没有档期，请先在主程序中添加。</div>'}</div></section>`;
+  const customerCard=`<section class="assocCard"><h3>客户系统 · ${customers.length}</h3><div class="assocList">${customers.map(item=>itemHtml(item,'customer')).join('')||'<div class="assocEmpty">还没有客户，请先在主程序中添加。</div>'}</div></section>`;
+  const projectCard=`<section class="assocCard"><h3>项目知识系统 · ${projectNotes.length}</h3><div class="assocList">${projectNotes.map(n=>`<div class="assocItem"><div class="assocName">${esc(n.title)}</div><div class="assocMeta">${esc(n.folder)} · 更新于 ${formatDate(n.mtime)}</div><button class="btn" data-open="${esc(n.path)}">打开项目笔记</button></div>`).join('')||'<div class="assocEmpty">关联档期或客户后，项目笔记会显示在这里。</div>'}</div></section>`;
+  const cards=mode==='bookings'?bookingCard:mode==='customers'?customerCard:mode==='projects'?projectCard:`${bookingCard}${customerCard}${projectCard}`;
+  const descriptions={overview:'统一查看档期、客户和知识项目之间的关联。',bookings:'把具体活动档期转换为主持执行项目。',customers:'为客户建立长期沟通、偏好和复盘知识。',projects:'集中阅读已经建立关联的项目知识笔记。'};
+  $('reader').innerHTML=`<div class="dashboard"><div class="dashTitle">播控业务协同系统 · ${titles[mode]}</div><p style="color:var(--muted)">${descriptions[mode]} 手机号等敏感信息不会写入知识库。</p><div class="assocGrid">${cards}</div></div>`;
+  bindReaderLinks();
+  document.querySelectorAll('[data-link-type]').forEach(button=>button.onclick=async()=>{
+    const type=button.dataset.linkType,id=button.dataset.linkId;
+    const item=(type==='booking'?bookings:customers).find(entry=>entry.id===id);if(!item)return;
+    button.disabled=true;button.textContent='正在创建…';
+    const name=type==='booking'?(item.clientName||'未命名档期'):(item.name||'未命名客户');
+    const result=await api.knowledgeLinkBusinessProject({
+      sourceType:type,sourceId:id,title:type==='booking'?`${name}-${item.eventType||'活动'}`:`${name}-客户项目`,
+      details:{date:item.date,eventType:item.eventType,status:item.status,venue:item.venue,customerName:name}
+    });
+    if(!result?.ok){button.disabled=false;button.textContent='创建关联项目';return toast(result?.reason||'创建失败')}
+    toast(result.existed?'已打开现有关联项目':'关联项目已创建');await loadNotes();await openNote(result.item.notePath);
+  });
+}
+async function openNote(relativePath){
+  const epoch=++viewEpoch,res=await api.knowledgeReadNote(relativePath);if(epoch!==viewEpoch)return;if(!res?.ok){toast(res?.reason||'读取失败');return}current=notes.find(n=>n.path===relativePath)||{path:relativePath,title:relativePath.split('/').pop().replace(/\.md$/,'')};currentMtime=res.mtime;current.content=res.content;editing=false;renderReader();renderList()
+}
+function backlinks(){if(!current)return[];return notes.filter(n=>(n.links||[]).some(l=>l===current.title||l===current.path.replace(/\.md$/,'')))}
+function renderReader(){
+  const related=backlinks();$('reader').innerHTML=`<div class="readerTop"><div class="readerPath">${esc(current.path)}</div><button class="btn" id="tagBtn">🏷 标签</button><button class="btn" id="smartBtn">✨ 智能整理</button><button class="btn" id="favBtn">${current.favorite?'★ 已收藏':'☆ 收藏'}</button><button class="btn" id="moveBtn">移动</button>${config.hasObsidian?'<button class="btn" id="obsidianBtn">Obsidian</button>':''}<button class="btn primary" id="editBtn">编辑</button><button class="btn danger" id="trashBtn">移到回收站</button></div><div class="doc"><div class="docInner"><div class="docMeta"><span>📁 ${esc(current.folder||'根目录')}</span><span>更新于 ${new Date(current.mtime).toLocaleString()}</span>${(current.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('')||'<span style="color:var(--muted)">暂无标签，点击顶部“标签”添加</span>'}</div><div class="markdown" id="contentView">${renderMarkdown(current.content)}</div></div><div class="sideInfo"><h4>反向链接</h4><div class="linkPills">${related.map(n=>`<button class="linkPill" data-open="${esc(n.path)}">${esc(n.title)}</button>`).join('')||'暂无其他笔记引用此页'}</div></div></div>`;
+  $('editBtn').onclick=toggleEdit;$('tagBtn').onclick=()=>{$('editTags').value=(current.tags||[]).join(', ');$('tagDialog').showModal()};$('favBtn').onclick=toggleFavorite;$('moveBtn').onclick=()=>{fillFolderSelect();$('moveDialog').showModal()};$('trashBtn').onclick=trashNote;$('smartBtn').onclick=smartAnalyze;if($('obsidianBtn'))$('obsidianBtn').onclick=()=>api.knowledgeOpenInObsidian(current.path);bindReaderLinks()
+}
+function bindReaderLinks(){
+  document.querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openNote(el.dataset.open));
+  document.querySelectorAll('.wikilink').forEach(el=>el.onclick=()=>{const target=notes.find(n=>n.title===el.dataset.link||n.path.replace(/\.md$/,'')===el.dataset.link);if(target)openNote(target.path);else toast('未找到链接笔记')})
+}
+function toggleEdit(){
+  editing=!editing;if(editing){$('contentView').outerHTML=`<textarea class="editor" id="editor">${esc(current.content)}</textarea>`;$('editBtn').textContent='保存';$('editBtn').onclick=saveEdit;$('editor').focus()}else renderReader()
+}
+async function saveEdit(){const res=await api.knowledgeUpdateNote({relativePath:current.path,content:$('editor').value,expectedMtime:currentMtime});if(!res?.ok){toast(res.message||res.reason||'保存失败');return}current.content=$('editor').value;currentMtime=res.mtime;editing=false;toast('已保存');await loadNotes();await openNote(current.path)}
+async function toggleFavorite(){const res=await api.knowledgeToggleFavorite(current.path);if(res?.ok){current.favorite=res.favorite;await loadNotes();await openNote(current.path)}}
+async function trashNote(){if(!confirm(`将“${current.title}”移到可恢复的回收站？`))return;const res=await api.knowledgeTrashNote(current.path);if(res?.ok){current=null;toast('已移到回收站');await loadNotes();applyView()}else toast(res?.reason)}
+function fillFolderSelect(){$('moveFolder').value=current.folder||folders()[0]}
+async function smartAnalyze(){const res=await api.knowledgeSmartAnalyze(current.path);if(!res?.ok)return toast(res?.reason);$('reportTitle').textContent='智能整理建议';$('reportContent').innerHTML=`<b>摘要</b><p>${esc(res.summary)}</p><b>建议类型</b><p>${esc(res.typeSuggestion)}</p><b>建议标签</b><p>${res.suggestedTags.map(t=>`<span class="tag">#${esc(t)}</span>`).join(' ')}</p><b>相关笔记</b><div>${res.related.map(n=>`<button class="dashLink" data-open="${esc(n.path)}">${esc(n.title)} · 相关度 ${n.score}</button>`).join('')||'暂无'}</div>`;$('reportDialog').showModal();bindReaderLinks()}
+async function renderGraph(epoch){
+  $('listTitle').textContent='知识关系';renderList(notes.slice(0,20));const g=await api.knowledgeGetGraph();if(!g?.ok||epoch!==viewEpoch||activeView!=='graph')return;const nodes=g.nodes.slice(0,80);$('reader').innerHTML=`<div class="graphWrap"><h2>知识关系图</h2><div class="graphStats">${g.nodes.length} 个节点 · ${g.edges.length} 条链接</div><div class="graph" id="graph"></div></div>`;const box=$('graph');setTimeout(()=>{if(epoch!==viewEpoch||activeView!=='graph'||!box?.isConnected)return;const w=box.clientWidth,h=box.clientHeight,cx=w/2,cy=h/2,r=Math.min(w,h)*.38;const pos=new Map();nodes.forEach((n,i)=>{const a=Math.PI*2*i/nodes.length+(i%5)*.08;pos.set(n.id,{x:cx+Math.cos(a)*r*(.65+(i%3)*.15),y:cy+Math.sin(a)*r*(.65+(i%4)*.1)});});g.edges.forEach(e=>{const a=pos.get(e.source),b=pos.get(e.target);if(!a||!b)return;const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;box.insertAdjacentHTML('beforeend',`<div class="edge" style="left:${a.x}px;top:${a.y}px;width:${len}px;transform:rotate(${ang}deg)"></div>`)});nodes.forEach(n=>{const p=pos.get(n.id);box.insertAdjacentHTML('beforeend',`<button class="node" data-open="${esc(n.id)}" style="left:${p.x}px;top:${p.y}px">${esc(n.label)}</button>`)});bindReaderLinks()},30)
+}
+async function healthCheck(){const r=await api.knowledgeHealthCheck();if(!r?.ok)return toast(r?.reason);$('reportTitle').textContent='知识库体检报告';$('reportContent').innerHTML=`<p><b>${r.total}</b> 篇笔记 · <b>${r.links}</b> 条链接 · <b>${r.openTasks}</b> 个未完成任务</p><p>孤立笔记：${r.orphaned.length}</p><p>重复标题组：${r.duplicates.length}</p><p>空笔记：${r.empty.length}</p><p>收件箱待整理：${r.inbox.length}</p><details><summary>查看孤立笔记</summary>${r.orphaned.map(p=>`<button class="dashLink" data-open="${esc(p)}">${esc(p)}</button>`).join('')}</details>`;$('reportDialog').showModal();bindReaderLinks()}
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{activeView=b.dataset.view;activeFolder='';applyView()});
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
+$('newNote').onclick=()=>{$('newTitle').value='';$('newTags').value='';$('newContent').value='';$('newFolder').value=activeFolder||'00-收件箱';$('noteDialog').showModal()};
+$('noteForm').onsubmit=async e=>{e.preventDefault();const tags=$('newTags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);const r=await api.knowledgeCreateNote({folder:$('newFolder').value,title:$('newTitle').value,tags,content:$('newContent').value});if(!r?.ok)return toast(r?.reason);$('noteDialog').close();await loadNotes();openNote(r.relativePath)};
+$('taskForm').onsubmit=async e=>{e.preventDefault();const submit=e.submitter;submit.disabled=true;const r=await api.knowledgeAddTask($('taskText').value);submit.disabled=false;if(!r?.ok)return toast(r?.reason||'创建待办失败');$('taskDialog').close();toast('待办已创建');await loadNotes();activeView='home';applyView()};
+$('saveTags').onclick=async()=>{if(!current)return;const tags=$('editTags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);const r=await api.knowledgeSetTags({relativePath:current.path,tags});if(!r?.ok)return toast(r?.reason||'标签保存失败');$('tagDialog').close();toast('标签已保存');await loadNotes();await openNote(current.path)};
+$('confirmMove').onclick=async()=>{const r=await api.knowledgeMoveNote({relativePath:current.path,folder:$('moveFolder').value});if(!r?.ok)return toast(r?.reason);$('moveDialog').close();await loadNotes();openNote(r.relativePath)};
+$('businessBtn').onclick=()=>{$('businessTitle').value='';$('businessContent').value='';$('businessDialog').showModal()};
+$('businessForm').onsubmit=async e=>{e.preventDefault();const r=await api.knowledgeCaptureBusiness({type:$('businessType').value,title:$('businessTitle').value,content:$('businessContent').value,allowSensitive:$('allowSensitive').checked});if(!r?.ok)return toast(r?.reason);$('businessDialog').close();toast('业务经验已沉淀');await loadNotes();openNote(r.relativePath)};
+$('healthBtn').onclick=healthCheck;$('backupBtn').onclick=async()=>{const r=await api.knowledgeCreateBackup();toast(r?.ok?'备份已创建':r?.reason)};$('openFolderBtn').onclick=()=>api.knowledgeOpenFolder();
+$('settingsBtn').onclick=()=>{$('settingsInfo').textContent=config?.vaultPath||'';$('settingsDialog').showModal()};
+$('useBuiltin').onclick=async()=>{const r=await api.knowledgeUseBuiltin();if(r?.ok){$('settingsDialog').close();toast('已切换到内置知识库');await loadNotes()}};
+$('chooseVault').onclick=async()=>{const r=await api.knowledgeChooseVault();if(r?.ok){$('settingsDialog').close();toast('已连接外部知识库');await loadNotes()}};
+$('refreshBtn').onclick=()=>loadNotes();$('sort').onchange=applyView;$('tagFilter').onchange=applyView;$('search').oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>loadNotes($('search').value),260)};
+setInterval(async()=>{if($('search').value)return;const r=await api.knowledgeListNotes('');if(r?.ok&&signature&&r.signature!==signature)loadNotes()},4000);
+loadNotes();
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PROGRAM OUTPUT</title>
+<style>
+:root{--bg:#000;--panel:rgba(7,12,24,.96);--line:rgba(120,140,180,.18);--txt:#edf4ff;--muted:#95abd2;--blue:#34b0ff;--amber:#ffd66e}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",Arial}
+body{display:flex;flex-direction:column;overflow:hidden}
+body.pure #bar{display:none}
+#bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+#left{display:flex;gap:12px;align-items:center;min-width:0}
+#ttl{font-weight:900;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#d7e5ff}
+#name{font-size:12px;color:var(--muted);max-width:45vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#acts{display:flex;gap:6px;flex-wrap:wrap}
+.b{padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:#10192c;color:var(--txt);font:700 12px/1 inherit;cursor:pointer}
+#wrap{position:relative;flex:1;background:#000;overflow:hidden}
+#stage{position:absolute;inset:0;overflow:hidden;background:#000}
+.layer{position:absolute;overflow:hidden;background:#000}
+.layer video,.layer img,.layer iframe,.layer embed{width:100%;height:100%;display:block;object-fit:cover;border:0;background:#000}
+.capMedia{position:absolute;display:block;border:0;background:#000}
+.txt,.clk{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font-weight:900;color:#fff}
+.txt{font-size:clamp(18px,3vw,52px);line-height:1.25}
+.clk{font-size:clamp(20px,3.4vw,58px)}
+#safe{position:absolute;left:5%;top:5%;width:90%;height:90%;border:1px dashed rgba(255,214,110,.78);display:none;pointer-events:none;z-index:5}
+#hud{position:absolute;right:16px;top:14px;padding:6px 10px;border-radius:999px;background:rgba(5,9,16,.68);border:1px solid rgba(122,143,187,.24);font:700 12px/1.2 inherit;color:var(--txt);display:none;z-index:6}
+#black{position:absolute;inset:0;background:#000;display:none;z-index:7}
+</style>
+</head>
+<body>
+  <div id="bar">
+    <div id="left">
+      <div id="ttl">Program Output</div>
+      <div id="name"></div>
+    </div>
+    <div id="acts">
+      <button class="b" id="oFs">全屏</button>
+      <button class="b" id="oPure">纯净</button>
+      <button class="b" id="oNormal">工具栏</button>
+    </div>
+  </div>
+  <div id="wrap">
+    <div id="stage"></div>
+    <div id="safe"></div>
+    <div id="hud"></div>
+    <div id="black"></div>
+  </div>
+<script>
+(() => {
+  const state = { title:'PROGRAM OUTPUT', layers:[], baseSize:{ width:1280, height:720 }, black:false, safe:false, pure:false, mute:false, clock:false, playing:true, label:'' };
+  const captureStreams = new Map();
+  const $ = (s)=>document.querySelector(s);
+  const stage = $('#stage');
+  const safe = $('#safe');
+  const hud = $('#hud');
+  const black = $('#black');
+  const nameEl = $('#name');
+  const syncClass = () => document.body.classList.toggle('pure', !!state.pure);
+  function tickClock() {
+    if (!state.clock) return;
+    hud.textContent = new Date().toLocaleTimeString('zh-CN', { hour12:false });
+  }
+  setInterval(tickClock, 1000);
+
+  async function getCaptureStream(sourceId) {
+    if (!sourceId) return null;
+    const cached = captureStreams.get(sourceId);
+    if (cached && cached.active) return cached;
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        mandatory: {
+          chromeMediaSource: 'desktop',
+          chromeMediaSourceId: sourceId,
+          minWidth: 640,
+          minHeight: 360,
+          maxWidth: 3840,
+          maxHeight: 2160,
+          maxFrameRate: 30
+        }
+      }
+    });
+    captureStreams.set(sourceId, stream);
+    return stream;
+  }
+  function hydrateCaptureVideos(root = document) {
+    root.querySelectorAll('video[data-capture-id]').forEach(async (video) => {
+      const sourceId = video.dataset.captureId || '';
+      if (!sourceId) return;
+      try {
+        const stream = await getCaptureStream(sourceId);
+        if (video.srcObject !== stream) video.srcObject = stream;
+        video.muted = true;
+        video.playsInline = true;
+        video.autoplay = true;
+        if (!video.dataset.captureBound) {
+          video.dataset.captureBound = '1';
+          video.addEventListener('loadedmetadata', () => { video.play().catch(()=>{}); });
+        }
+        video.play().catch(()=>{});
+      } catch (err) {
+        console.error('capture hydrate failed', err);
+      }
+    });
+  }
+  function applyMediaStyle(el, layer){
+    if (!el) return;
+    const fit = layer.fitMode === 'contain' ? 'contain' : (layer.fitMode === 'stretch' ? 'fill' : 'cover');
+    if (layer.type === 'capture') {
+      el.classList.add('capMedia');
+      const crop = layer.crop || null;
+      if (crop && crop.w > 0 && crop.h > 0) {
+        el.style.objectFit = 'fill';
+        el.style.width = `${100 / crop.w}%`;
+        el.style.height = `${100 / crop.h}%`;
+        el.style.left = `${-(crop.x / crop.w) * 100}%`;
+        el.style.top = `${-(crop.y / crop.h) * 100}%`;
+      } else {
+        el.style.objectFit = fit;
+        el.style.width = '100%';
+        el.style.height = '100%';
+        el.style.left = '0';
+        el.style.top = '0';
+      }
+      return;
+    }
+    if (el.tagName === 'VIDEO' || el.tagName === 'IMG') el.style.objectFit = fit;
+  }
+  function applyMediaProps(el, layer){
+    if (el.tagName === 'VIDEO'){
+      el.muted = !!state.mute;
+      el.loop = !!layer.loop;
+      el.autoplay = !!state.playing;
+      el.playsInline = true;
+      try { el.currentTime = Number(layer.currentTime) || 0; } catch {}
+      renderedMedia.push(el);
+      setTimeout(() => {
+        try {
+          if(state.playing) el.play?.().catch(()=>{});
+          else el.pause?.();
+        } catch {}
+      }, 30);
+    }
+  }
+  let renderedMedia = [];
+function cleanupStageMedia(){
+  renderedMedia.forEach((media)=>{
+    try{ media.pause?.(); }catch{}
+    try{ media.removeAttribute?.('src'); }catch{}
+    try{ media.srcObject = null; }catch{}
+    try{ media.load?.(); }catch{}
+  });
+  renderedMedia = [];
+}
+
+function scaleRect(layer){
+    const baseW = Math.max(1, Number(state.baseSize?.width) || 1280);
+    const baseH = Math.max(1, Number(state.baseSize?.height) || 720);
+    const stageW = Math.max(1, stage.clientWidth || baseW);
+    const stageH = Math.max(1, stage.clientHeight || baseH);
+    const sx = stageW / baseW;
+    const sy = stageH / baseH;
+    return {
+      x: Math.round((Number(layer.x) || 0) * sx),
+      y: Math.round((Number(layer.y) || 0) * sy),
+      w: Math.max(1, Math.round((Number(layer.w) || stageW) * sx)),
+      h: Math.max(1, Math.round((Number(layer.h) || stageH) * sy))
+    };
+  }
+  function render() {
+    nameEl.textContent = state.title || 'PROGRAM OUTPUT';
+    cleanupStageMedia();
+    stage.innerHTML = '';
+    (state.layers || []).forEach(layer => {
+      const box = document.createElement('div');
+      box.className = 'layer';
+      const rect = scaleRect(layer);
+      box.style.left = `${rect.x}px`;
+      box.style.top = `${rect.y}px`;
+      box.style.width = `${rect.w}px`;
+      box.style.height = `${rect.h}px`;
+      box.style.opacity = String(layer.opacity == null ? 1 : layer.opacity);
+      let node;
+      if (layer.type === 'video') {
+        node = document.createElement('video');
+        node.src = layer.url;
+        applyMediaStyle(node, layer);
+      } else if (layer.type === 'capture') {
+        node = document.createElement('video');
+        node.dataset.captureId = layer.captureSourceId || '';
+        applyMediaStyle(node, layer);
+      } else if (layer.type === 'image') {
+        node = document.createElement('img');
+        node.src = layer.url;
+        applyMediaStyle(node, layer);
+      } else if (layer.type === 'pdf') {
+        node = document.createElement('embed');
+        node.src = layer.url;
+      } else if (layer.type === 'web') {
+        node = document.createElement('iframe');
+        node.src = layer.url;
+      } else if (layer.type === 'text') {
+        node = document.createElement('div');
+        node.className = 'txt';
+        node.textContent = layer.text || '';
+      } else if (layer.type === 'clock') {
+        node = document.createElement('div');
+        node.className = 'clk';
+        node.textContent = new Date().toLocaleTimeString('zh-CN', { hour12:false });
+        setInterval(() => { node.textContent = new Date().toLocaleTimeString('zh-CN', { hour12:false }); }, 1000);
+      } else {
+        node = document.createElement('div');
+        node.className = 'txt';
+        node.textContent = layer.name || '素材';
+      }
+      box.appendChild(node);
+      stage.appendChild(box);
+      applyMediaProps(node, layer);
+    });
+    hydrateCaptureVideos(stage);
+    black.style.display = state.black ? 'block' : 'none';
+    safe.style.display = state.safe ? 'block' : 'none';
+    hud.style.display = state.clock || state.label ? 'block' : 'none';
+    hud.textContent = state.clock ? new Date().toLocaleTimeString('zh-CN', { hour12:false }) : (state.label || '');
+    syncClass();
+  }
+  function merge(payload){
+    Object.assign(state, payload || {});
+    render();
+  }
+  if (window.anningDesktop?.onOutputState) {
+    window.anningDesktop.onOutputState(merge);
+    window.anningDesktop.getOutputState?.().then((res)=>{ if(res?.ok) merge(res.state || {}); });
+  }
+  $('#oFs')?.addEventListener('click', async ()=>{
+    const res = await window.anningDesktop?.toggleWindowFullscreen?.('video_output');
+    $('#oFs').textContent = res?.isFullScreen ? '退出全屏' : '全屏';
+  });
+  $('#oPure')?.addEventListener('click', async ()=>{
+    state.pure = true; render();
+    await window.anningDesktop?.updateOutputState?.({ pure:true });
+  });
+  $('#oNormal')?.addEventListener('click', async ()=>{
+    state.pure = false; render();
+    await window.anningDesktop?.updateOutputState?.({ pure:false });
+  });
+  window.addEventListener('resize', () => render());
+})();
+</script>
+</body>
+</html>

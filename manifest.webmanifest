@@ -1,0 +1,22 @@
+{
+  "id": "./",
+  "name": "信伯礼控 Mobile Studio",
+  "short_name": "信伯礼控",
+  "description": "主持人档期、客户、婚礼执行、台词、知识与现场音乐工作台",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "theme_color": "#171a24",
+  "background_color": "#f5f3ee",
+  "icons": [
+    {"src":"./icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ],
+  "shortcuts": [
+    {"name":"打开播放器","short_name":"播放器","url":"./index.html#music"},
+    {"name":"打开知识库","short_name":"知识库","url":"./knowledge.html"},
+    {"name":"查看档期","short_name":"档期","url":"./index.html#schedule"}
+  ]
+}

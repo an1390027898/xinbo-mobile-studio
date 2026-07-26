@@ -1,0 +1,280 @@
+/* Simple Studio v4.6.2 音乐模块回归与录音后 A1 稳定版 */
+#multiTrackPanel{display:none;margin-top:12px;border:1px solid var(--line);border-radius:20px;background:color-mix(in srgb,var(--panel) 92%,transparent);overflow:hidden;min-height:720px}
+#multiTrackPanel.mtOn{display:block}
+#multiTrackPanel *{box-sizing:border-box}
+#multiTrackPanel .mtTop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--card2) 86%,transparent);position:sticky;top:0;z-index:18}
+#multiTrackPanel .mtBrand{display:flex;align-items:center;gap:10px;min-width:240px}
+#multiTrackPanel .mtBrand b{font-size:16px}
+#multiTrackPanel .mtBrand span{font-size:12px;color:var(--muted)}
+#multiTrackPanel .mtTopActions,#multiTrackPanel .mtTransport,#multiTrackPanel .mtProjectBar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#multiTrackPanel .mtProjectBar{padding:12px 14px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--btnbg) 82%,transparent)}
+#multiTrackPanel .mtProjectName{min-width:190px;flex:1}
+#multiTrackPanel input,#multiTrackPanel select{border:1px solid var(--line);background:var(--btnbg2);color:var(--text);border-radius:12px;padding:8px 10px;outline:none}
+#multiTrackPanel input:focus,#multiTrackPanel select:focus{border-color:color-mix(in srgb,var(--p2) 45%,var(--line));box-shadow:0 0 0 3px color-mix(in srgb,var(--p2) 12%,transparent)}
+#multiTrackPanel .mtBtn{border:1px solid var(--line);background:var(--btnbg);color:var(--text);border-radius:12px;padding:8px 11px;cursor:pointer;font-weight:800;white-space:nowrap}
+#multiTrackPanel .mtBtn:hover{background:var(--btnbg2)}
+#multiTrackPanel .mtBtn.primary{background:linear-gradient(135deg,color-mix(in srgb,var(--p2) 22%,transparent),color-mix(in srgb,var(--p1) 18%,transparent));border-color:color-mix(in srgb,var(--p2) 34%,var(--line))}
+#multiTrackPanel .mtBtn.danger{border-color:color-mix(in srgb,var(--danger) 34%,var(--line));background:color-mix(in srgb,var(--danger) 10%,transparent)}
+#multiTrackPanel .mtBtn.on{outline:2px solid color-mix(in srgb,var(--p2) 48%,transparent)}
+#multiTrackPanel .mtTransport{padding:12px 14px;border-bottom:1px solid var(--line)}
+#multiTrackPanel .mtTransport .mtTime{font-family:var(--mono);font-weight:900;min-width:125px;text-align:center}
+#multiTrackPanel .mtSeek{flex:1;min-width:220px}
+#multiTrackPanel .mtMaster{display:flex;gap:7px;align-items:center;font-size:12px;color:var(--muted)}
+#multiTrackPanel .mtMaster input{width:110px;padding:0}
+#multiTrackPanel .mtEditBar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--p2) 5%,var(--btnbg));font-size:12px;color:var(--muted)}
+#multiTrackPanel .mtEditBar label{display:flex;align-items:center;gap:6px;color:var(--text);font-weight:800;white-space:nowrap}
+#multiTrackPanel .mtEditBar input[type="checkbox"]{width:auto;padding:0}
+#multiTrackPanel .mtEditBar input[type="number"]{width:72px;padding:6px 8px}
+#multiTrackPanel .mtEditBar>span{flex:1;min-width:300px}
+#multiTrackPanel .mtInspector{padding:10px 14px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--card2) 76%,transparent)}
+#multiTrackPanel .mtInspectorEmpty{padding:8px 10px;color:var(--muted);font-size:12px;border:1px dashed var(--line);border-radius:12px}
+#multiTrackPanel .mtInspectorTop{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:9px}
+#multiTrackPanel .mtInspectorTop b{font-size:13px}
+#multiTrackPanel .mtInspectorTop span{font:11px var(--mono);color:var(--muted)}
+#multiTrackPanel .mtInspectorGrid{display:grid;grid-template-columns:1.5fr repeat(5,minmax(105px,.8fr)) 1.2fr 1.2fr auto auto;gap:7px;align-items:end}
+#multiTrackPanel .mtInspectorGrid>label{display:grid;gap:4px;font-size:10px;color:var(--muted);min-width:0}
+#multiTrackPanel .mtInspectorGrid input{width:100%;min-width:0;padding:6px 7px;font-size:11px}
+#multiTrackPanel .mtInspectorGrid input[type="range"]{padding:0}
+#multiTrackPanel .mtInspectorAuto{display:grid;gap:4px;align-content:center;min-width:112px;padding:6px 8px;border:1px solid color-mix(in srgb,var(--warn) 28%,var(--line));border-radius:11px;background:color-mix(in srgb,var(--warn) 7%,transparent);font-size:10px;color:var(--warn);font-weight:850}
+#multiTrackPanel .mtInspectorActions{display:flex;gap:6px;align-items:center}
+#multiTrackPanel .mtWorkspace{padding:12px 14px 18px;overflow:auto}
+#multiTrackPanel .mtRulerRow{display:grid;grid-template-columns:250px minmax(720px,1fr);gap:10px;align-items:end;margin-bottom:8px}
+#multiTrackPanel .mtRulerInfo{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
+#multiTrackPanel .mtRuler{height:42px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--btnbg2) 78%,transparent);cursor:pointer;width:100%}
+#multiTrackPanel .mtTracks{display:grid;gap:8px;min-width:980px}
+#multiTrackPanel .mtTrack{display:grid;grid-template-columns:250px minmax(720px,1fr);gap:10px;border:1px solid var(--line);border-radius:15px;padding:8px;background:color-mix(in srgb,var(--btnbg) 86%,transparent)}
+#multiTrackPanel .mtTrack.isMuted{opacity:.63}
+#multiTrackPanel .mtTrack.isSolo{outline:2px solid color-mix(in srgb,var(--warn) 42%,transparent)}
+#multiTrackPanel .mtTrackControl{display:grid;gap:7px;align-content:center}
+#multiTrackPanel .mtTrackHead{display:flex;align-items:center;gap:6px}
+#multiTrackPanel .mtTrackName{min-width:0;flex:1;font-weight:850;padding:6px 8px}
+#multiTrackPanel .mtTiny{border:1px solid var(--line);background:var(--btnbg2);color:var(--text);border-radius:9px;padding:5px 8px;cursor:pointer;font-size:11px;font-weight:900;white-space:nowrap}
+#multiTrackPanel .mtTiny.on{background:color-mix(in srgb,var(--warn) 18%,transparent);border-color:color-mix(in srgb,var(--warn) 35%,var(--line))}
+#multiTrackPanel .mtTiny.danger{color:var(--danger)}
+#multiTrackPanel .mtTrackMeta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px}
+#multiTrackPanel .mtTrackActions{display:flex;gap:6px;flex-wrap:wrap}
+#multiTrackPanel .mtLane{height:112px;position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:color-mix(in srgb,var(--card2) 78%,transparent);cursor:crosshair;touch-action:none;transition:border-color .12s,box-shadow .12s,background .12s}
+#multiTrackPanel .mtLane.isDropTarget{border-color:color-mix(in srgb,var(--p2) 68%,var(--line));box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--p2) 25%,transparent),0 0 24px color-mix(in srgb,var(--p2) 12%,transparent);background:color-mix(in srgb,var(--p2) 8%,var(--card2))}
+#multiTrackPanel .mtLaneGrid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,color-mix(in srgb,var(--line) 55%,transparent) 1px,transparent 1px),linear-gradient(to bottom,color-mix(in srgb,var(--line) 35%,transparent) 1px,transparent 1px);background-size:10% 100%,100% 50%}
+#multiTrackPanel .mtCursor{position:absolute;top:0;bottom:0;width:2px;background:var(--danger);pointer-events:none;z-index:14;box-shadow:0 0 10px color-mix(in srgb,var(--danger) 45%,transparent)}
+#multiTrackPanel .mtSnapGuide{display:none;position:absolute;top:0;bottom:0;width:2px;background:var(--warn);pointer-events:none;z-index:16;box-shadow:0 0 12px color-mix(in srgb,var(--warn) 55%,transparent)}
+#multiTrackPanel .mtSnapGuide.on{display:block}
+#multiTrackPanel .mtEmpty{border:1px dashed var(--line);border-radius:18px;padding:46px 18px;text-align:center;color:var(--muted);background:color-mix(in srgb,var(--btnbg2) 68%,transparent)}
+#multiTrackPanel .mtEmpty b{display:block;color:var(--text);font-size:17px;margin-bottom:8px}
+#multiTrackPanel .mtDropHot{outline:3px dashed color-mix(in srgb,var(--p2) 48%,transparent);outline-offset:-7px}
+#multiTrackPanel .mtStatus{padding:9px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#multiTrackPanel .mtDirty{color:var(--warn);font-weight:850}
+#multiTrackPanel .mtClip{position:absolute;top:7px;bottom:7px;border:1px solid color-mix(in srgb,var(--p2) 52%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--p2) 9%,var(--card));box-shadow:0 5px 18px rgba(0,0,0,.18);pointer-events:none;z-index:3;overflow:visible}
+#multiTrackPanel .mtClip.isSelected{outline:2px solid color-mix(in srgb,var(--p2) 78%,transparent);z-index:7}
+#multiTrackPanel .mtClip.isDragging{outline:2px solid color-mix(in srgb,var(--warn) 72%,transparent);box-shadow:0 10px 28px rgba(0,0,0,.28)}
+#multiTrackPanel .mtClip.isDragOrigin{opacity:.25}
+#multiTrackPanel .mtClipWave{position:absolute;inset:0;display:block;width:100%;height:100%;border-radius:9px;overflow:hidden;pointer-events:none}
+#multiTrackPanel .mtClipBody{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding:8px 12px 7px;cursor:grab;pointer-events:auto;overflow:hidden;user-select:none;touch-action:none;background:linear-gradient(180deg,transparent 34%,color-mix(in srgb,var(--bg) 48%,transparent));border-radius:9px}
+#multiTrackPanel .mtClipBody:active{cursor:grabbing}
+#multiTrackPanel .mtClipBody span{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px var(--bg)}
+#multiTrackPanel .mtClipBody b{font:9px var(--mono);color:var(--muted);white-space:nowrap;text-shadow:0 1px 2px var(--bg)}
+#multiTrackPanel .mtTrimHandle{position:absolute;top:0;bottom:0;width:10px;z-index:9;pointer-events:auto;cursor:ew-resize;touch-action:none}
+#multiTrackPanel .mtTrimHandle.left{left:-5px;border-left:3px solid color-mix(in srgb,var(--p2) 78%,white)}
+#multiTrackPanel .mtTrimHandle.right{right:-5px;border-right:3px solid color-mix(in srgb,var(--p2) 78%,white)}
+#multiTrackPanel .mtTrimHandle::after{content:'';position:absolute;top:50%;width:5px;height:28px;transform:translateY(-50%);border-radius:4px;background:color-mix(in srgb,var(--p2) 70%,white);box-shadow:0 0 0 2px color-mix(in srgb,var(--bg) 55%,transparent)}
+#multiTrackPanel .mtTrimHandle.left::after{left:-4px}
+#multiTrackPanel .mtTrimHandle.right::after{right:-4px}
+#multiTrackPanel .mtFadeHandle{position:absolute;top:5px;width:16px;height:16px;margin-left:-8px;border-radius:50%;z-index:11;pointer-events:auto;cursor:ew-resize;touch-action:none;background:var(--warn);border:2px solid color-mix(in srgb,var(--bg) 65%,transparent);box-shadow:0 2px 8px rgba(0,0,0,.35)}
+#multiTrackPanel .mtFadeHandle span{position:absolute;top:15px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:950;color:var(--warn);text-shadow:0 1px 2px var(--bg);pointer-events:none}
+#multiTrackPanel .mtFadeShade{position:absolute;top:0;bottom:0;pointer-events:none;z-index:1;background:linear-gradient(90deg,color-mix(in srgb,var(--bg) 72%,transparent),transparent)}
+#multiTrackPanel .mtFadeShade.in{left:0}
+#multiTrackPanel .mtFadeShade.out{right:0;transform:scaleX(-1)}
+#multiTrackPanel .mtAutoMark{position:absolute;right:6px;top:5px;z-index:10;font-style:normal;font-size:8px;font-weight:950;letter-spacing:.6px;color:var(--warn);pointer-events:none;text-shadow:0 1px 2px var(--bg)}
+#multiTrackPanel .mtCrossfadeBadge{position:absolute;top:31px;height:44px;min-width:8px;z-index:8;pointer-events:none;border-left:1px solid var(--warn);border-right:1px solid var(--warn);background:linear-gradient(135deg,transparent 47%,color-mix(in srgb,var(--warn) 70%,transparent) 49%,color-mix(in srgb,var(--warn) 70%,transparent) 51%,transparent 53%),linear-gradient(45deg,transparent 47%,color-mix(in srgb,var(--warn) 48%,transparent) 49%,color-mix(in srgb,var(--warn) 48%,transparent) 51%,transparent 53%)}
+#multiTrackPanel .mtCrossfadeBadge span{position:absolute;left:50%;top:-19px;transform:translateX(-50%);padding:2px 5px;border-radius:6px;background:color-mix(in srgb,var(--bg) 85%,transparent);color:var(--warn);font:8px var(--mono);white-space:nowrap}
+.mtDragGhost{position:fixed;z-index:999999;pointer-events:none;border:2px solid color-mix(in srgb,var(--warn) 72%,transparent);border-radius:10px;background:color-mix(in srgb,var(--p2) 18%,var(--card));box-shadow:0 16px 42px rgba(0,0,0,.38);display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding:8px 12px;color:var(--text);opacity:.92;overflow:hidden}
+.mtDragGhost span{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mtDragGhost b{font:9px var(--mono);color:var(--muted);white-space:nowrap}
+body.mtDragging,body.mtDragging *{user-select:none!important}
+body[data-multitrack-active="1"] #p1SizeBar,
+body[data-multitrack-active="1"] #msP1Wrap,
+body[data-multitrack-active="1"] #ktvDetails{display:none!important}
+#mtA1Dialog{border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--text);width:min(760px,92vw);max-height:78vh;padding:0;box-shadow:0 20px 80px rgba(0,0,0,.45)}
+#mtA1Dialog::backdrop{background:rgba(0,0,0,.56);backdrop-filter:blur(3px)}
+#mtA1Dialog .mtDlgTop{display:flex;align-items:center;gap:8px;padding:13px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2}
+#mtA1Dialog .mtDlgTop input{flex:1}
+#mtA1Dialog .mtA1List{padding:10px;display:grid;gap:7px;max-height:62vh;overflow:auto}
+#mtA1Dialog .mtA1Item{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:13px;padding:9px;background:var(--btnbg)}
+#mtA1Dialog .mtA1Name{font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mtA1Dialog .mtA1Meta{font-size:11px;color:var(--muted);margin-top:3px}
+@media(max-width:1350px){
+  #multiTrackPanel .mtInspectorGrid{grid-template-columns:1.4fr repeat(5,minmax(94px,.8fr)) 1fr 1fr;}
+  #multiTrackPanel .mtInspectorAuto,#multiTrackPanel .mtInspectorActions{grid-column:span 2}
+}
+@media(max-width:1050px){
+  #multiTrackPanel .mtTop{align-items:flex-start;flex-direction:column}
+  #multiTrackPanel .mtRulerRow,#multiTrackPanel .mtTrack{grid-template-columns:230px minmax(650px,1fr)}
+  #multiTrackPanel .mtTracks{min-width:900px}
+  #multiTrackPanel .mtInspectorGrid{grid-template-columns:repeat(4,minmax(130px,1fr))}
+  #multiTrackPanel .mtInspectorActions,#multiTrackPanel .mtInspectorAuto{grid-column:span 2}
+}
+
+
+/* v4.5.8 录音与音频块快捷音量 */
+#multiTrackPanel .mtBtn.record{border-color:color-mix(in srgb,#ef4444 42%,var(--line));background:color-mix(in srgb,#ef4444 10%,var(--btnbg))}
+#multiTrackPanel .mtBtn.record.on{background:color-mix(in srgb,#ef4444 22%,var(--btnbg));box-shadow:0 0 0 3px color-mix(in srgb,#ef4444 12%,transparent)}
+#multiTrackPanel .mtRecordBar{display:flex;align-items:center;gap:9px;padding:9px 14px;border-bottom:1px solid color-mix(in srgb,#ef4444 30%,var(--line));background:color-mix(in srgb,#ef4444 8%,var(--card2));font-size:12px}
+#multiTrackPanel .mtRecordBar[hidden]{display:none!important}
+#multiTrackPanel .mtRecordBar #mtRecordTime{font:900 13px var(--mono);color:#ef4444;min-width:62px}
+#multiTrackPanel .mtRecordBar #mtRecordTarget{color:var(--muted);flex:1}
+#multiTrackPanel .mtRecordDot{width:10px;height:10px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 0 rgba(239,68,68,.5);animation:mtRecordPulse 1.2s infinite}
+@keyframes mtRecordPulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}70%{box-shadow:0 0 0 8px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+#multiTrackPanel .mtClipQuickVolume{position:absolute;left:8px;right:8px;top:7px;height:23px;z-index:13;display:flex;align-items:center;gap:5px;padding:2px 6px;border:1px solid color-mix(in srgb,var(--line) 72%,transparent);border-radius:8px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(5px);pointer-events:auto;opacity:0;transform:translateY(-3px);transition:opacity .12s,transform .12s}
+#multiTrackPanel .mtClip:hover .mtClipQuickVolume,#multiTrackPanel .mtClip.isSelected .mtClipQuickVolume{opacity:1;transform:none}
+#multiTrackPanel .mtClipQuickVolume span{font-size:10px;line-height:1}
+#multiTrackPanel .mtClipQuickVolume input{min-width:34px;flex:1;height:14px;padding:0;border:0;background:transparent;box-shadow:none}
+#multiTrackPanel .mtClipQuickVolume b{font:900 9px var(--mono);color:var(--text);min-width:32px;text-align:right}
+#multiTrackPanel .mtClipQuickVolume:focus-within{outline:2px solid color-mix(in srgb,var(--p2) 38%,transparent)}
+#multiTrackPanel .mtClipBody{padding-top:31px}
+#multiTrackPanel .mtAutoMark{top:34px}
+
+
+/* v4.5.9 实时录音监看台 + 专业多轨工作区 */
+#multiTrackPanel{border-radius:24px;border-color:color-mix(in srgb,var(--p2) 18%,var(--line));background:radial-gradient(circle at 15% -20%,color-mix(in srgb,var(--p2) 10%,transparent),transparent 33%),linear-gradient(180deg,color-mix(in srgb,var(--panel) 97%,#080d16),color-mix(in srgb,var(--panel) 92%,#050811));box-shadow:0 24px 70px rgba(0,0,0,.25);min-height:780px}
+#multiTrackPanel .mtTop{padding:16px 18px;gap:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--card2) 96%,#0b1220),color-mix(in srgb,var(--panel) 92%,#070b13));box-shadow:0 8px 24px rgba(0,0,0,.13)}
+#multiTrackPanel .mtBrand{min-width:310px;gap:12px}
+#multiTrackPanel .mtBrandMark{width:48px;height:48px;flex:0 0 48px;border-radius:15px;display:grid;place-items:center;position:relative;overflow:hidden;background:linear-gradient(145deg,color-mix(in srgb,var(--p2) 34%,#101827),color-mix(in srgb,var(--p1) 28%,#0a101b));border:1px solid color-mix(in srgb,var(--p2) 32%,var(--line));box-shadow:inset 0 1px rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.2)}
+#multiTrackPanel .mtBrandMark span{font:950 15px var(--mono);letter-spacing:1px;color:color-mix(in srgb,var(--p2) 84%,white)}
+#multiTrackPanel .mtBrandMark i{position:absolute;left:8px;right:8px;bottom:8px;height:2px;background:linear-gradient(90deg,transparent,var(--p2),transparent);box-shadow:0 -5px 0 color-mix(in srgb,var(--p2) 42%,transparent),0 -10px 0 color-mix(in srgb,var(--p2) 18%,transparent)}
+#multiTrackPanel .mtBrandCopy{display:grid;gap:4px;min-width:0}
+#multiTrackPanel .mtBrandTitle{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#multiTrackPanel .mtBrandTitle b{font-size:17px;letter-spacing:.2px}
+#multiTrackPanel .mtModeBadge{font-style:normal;font:850 8px var(--mono);letter-spacing:1.1px;padding:4px 6px;border-radius:6px;color:var(--p2);border:1px solid color-mix(in srgb,var(--p2) 28%,var(--line));background:color-mix(in srgb,var(--p2) 8%,transparent)}
+#multiTrackPanel .mtTopActions{justify-content:flex-end;gap:7px}
+#multiTrackPanel .mtActionGroup{display:flex;align-items:center;gap:6px;padding:5px 6px;border:1px solid color-mix(in srgb,var(--line) 85%,transparent);border-radius:13px;background:color-mix(in srgb,var(--btnbg) 72%,transparent)}
+#multiTrackPanel .mtActionGroup small{display:none;font:800 8px var(--mono);letter-spacing:.8px;color:var(--muted)}
+#multiTrackPanel .mtActionGroup .mtBtn{padding:7px 9px;border-radius:9px;font-size:11px}
+#multiTrackPanel .mtBackBtn{padding:8px 10px;background:transparent}
+#multiTrackPanel .mtProjectBar{padding:10px 18px;gap:8px;background:color-mix(in srgb,var(--btnbg) 88%,#09101a);box-shadow:inset 0 -1px color-mix(in srgb,var(--line) 70%,transparent)}
+#multiTrackPanel .mtProjectLead{display:grid;gap:1px;min-width:74px;padding-right:10px;border-right:1px solid var(--line)}
+#multiTrackPanel .mtProjectLead span,#multiTrackPanel .mtToolTitle span,#multiTrackPanel .mtWorkspaceHead small{font:850 8px var(--mono);letter-spacing:1.2px;color:var(--p2)}
+#multiTrackPanel .mtProjectLead b,#multiTrackPanel .mtToolTitle b{font-size:11px}
+#multiTrackPanel .mtProjectBar select{max-width:220px}
+#multiTrackPanel .mtTransport{padding:10px 18px;gap:12px;background:linear-gradient(180deg,color-mix(in srgb,var(--card2) 82%,#070b12),color-mix(in srgb,var(--panel) 90%,#05070c));box-shadow:inset 0 -1px var(--line)}
+#multiTrackPanel .mtTransportButtons{display:flex;gap:7px}
+#multiTrackPanel .mtPlayBtn{min-width:86px;font-size:12px;box-shadow:0 7px 20px color-mix(in srgb,var(--p2) 10%,transparent)}
+#multiTrackPanel .mtStopBtn{min-width:70px}
+#multiTrackPanel .mtTimeBox{display:grid;gap:1px;min-width:160px;padding:6px 10px;border:1px solid color-mix(in srgb,var(--p2) 18%,var(--line));border-radius:10px;background:#070b12;box-shadow:inset 0 2px 10px rgba(0,0,0,.35)}
+#multiTrackPanel .mtTimeBox small{font:750 7px var(--mono);letter-spacing:1.1px;color:var(--muted)}
+#multiTrackPanel .mtTransport .mtTime{min-width:0;text-align:left;color:color-mix(in srgb,var(--p2) 84%,white);font-size:13px;letter-spacing:.3px}
+#multiTrackPanel .mtSeek{accent-color:var(--p2)}
+#multiTrackPanel .mtMasterRack{display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid var(--line)}
+#multiTrackPanel .mtMaster{padding:5px 7px;border-radius:9px;background:color-mix(in srgb,var(--btnbg2) 72%,transparent)}
+#multiTrackPanel .mtMaster.normalize{white-space:nowrap}
+#multiTrackPanel .mtEditBar{padding:9px 18px;gap:8px;background:color-mix(in srgb,var(--p2) 3%,#080d15)}
+#multiTrackPanel .mtToolTitle{display:grid;gap:1px;min-width:76px;margin-right:4px}
+#multiTrackPanel .mtToolChip{padding:6px 9px;border:1px solid var(--line);border-radius:9px;background:color-mix(in srgb,var(--btnbg2) 70%,transparent);font-size:11px!important}
+#multiTrackPanel .mtToolChip:has(input:checked){border-color:color-mix(in srgb,var(--p2) 32%,var(--line));background:color-mix(in srgb,var(--p2) 9%,var(--btnbg2))}
+#multiTrackPanel .mtEditBar>span{font-size:10px;text-align:right}
+#multiTrackPanel .mtInspector{padding:10px 18px;background:linear-gradient(180deg,color-mix(in srgb,var(--card2) 78%,transparent),color-mix(in srgb,var(--panel) 88%,transparent))}
+#multiTrackPanel .mtWorkspace{padding:14px 18px 22px;background:radial-gradient(circle at 80% 0,color-mix(in srgb,var(--p1) 5%,transparent),transparent 34%),color-mix(in srgb,var(--bg) 35%,transparent)}
+#multiTrackPanel .mtWorkspaceHead{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:10px;padding:0 2px}
+#multiTrackPanel .mtWorkspaceHead div{display:grid;gap:2px}
+#multiTrackPanel .mtWorkspaceHead b{font-size:14px}
+#multiTrackPanel .mtWorkspaceHead>span{font-size:10px;color:var(--muted)}
+#multiTrackPanel .mtRulerRow{grid-template-columns:260px minmax(760px,1fr);gap:8px;margin-bottom:6px}
+#multiTrackPanel .mtRulerInfo{padding:0 9px;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+#multiTrackPanel .mtRuler{height:38px;border-radius:8px;background:#080d15}
+#multiTrackPanel .mtTracks{gap:6px}
+#multiTrackPanel .mtTrack{grid-template-columns:260px minmax(760px,1fr);gap:8px;padding:5px;border-radius:12px;border-color:color-mix(in srgb,hsl(var(--laneHue) 70% 56%) 20%,var(--line));background:linear-gradient(90deg,color-mix(in srgb,hsl(var(--laneHue) 70% 48%) 7%,var(--btnbg)),color-mix(in srgb,var(--btnbg) 92%,transparent));box-shadow:0 5px 18px rgba(0,0,0,.09)}
+#multiTrackPanel .mtTrackControl{position:relative;gap:6px;padding:7px 8px 7px 11px;border-radius:9px;background:linear-gradient(145deg,color-mix(in srgb,var(--card2) 86%,#0a111d),color-mix(in srgb,var(--panel) 90%,#070b12));overflow:hidden}
+#multiTrackPanel .mtTrackControl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:hsl(var(--laneHue) 72% 57%);box-shadow:0 0 13px hsl(var(--laneHue) 72% 57% / .42)}
+#multiTrackPanel .mtTrackHead{gap:5px}
+#multiTrackPanel .mtTrackIndex{font:850 9px var(--mono);color:var(--muted);width:20px}
+#multiTrackPanel .mtTrackIcon{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;color:hsl(var(--laneHue) 78% 66%);background:hsl(var(--laneHue) 72% 48% / .12);border:1px solid hsl(var(--laneHue) 72% 55% / .22);font-size:11px}
+#multiTrackPanel .mtTrackName{background:transparent;border-color:transparent;padding:5px 4px;font-size:11px}
+#multiTrackPanel .mtTrackName:focus{background:var(--btnbg2)}
+#multiTrackPanel .mtTrackMeta span{display:flex;align-items:center;gap:5px}
+#multiTrackPanel .mtTrackStateDot{width:5px;height:5px;border-radius:50%;background:hsl(var(--laneHue) 75% 58%);box-shadow:0 0 7px hsl(var(--laneHue) 75% 58% / .7)}
+#multiTrackPanel .mtTrackActions{opacity:.72;transition:opacity .12s}
+#multiTrackPanel .mtTrack:hover .mtTrackActions{opacity:1}
+#multiTrackPanel .mtTrackActions .mtTiny{padding:4px 6px;font-size:9px;background:transparent}
+#multiTrackPanel .mtLane{height:126px;border-radius:9px;border-color:color-mix(in srgb,hsl(var(--laneHue) 64% 55%) 15%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--card2) 88%,#070b12),color-mix(in srgb,var(--panel) 88%,#060910));box-shadow:inset 0 2px 12px rgba(0,0,0,.18)}
+#multiTrackPanel .mtLaneGrid{background-image:linear-gradient(to right,color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px),linear-gradient(to right,color-mix(in srgb,var(--line) 28%,transparent) 1px,transparent 1px),linear-gradient(to bottom,color-mix(in srgb,var(--line) 30%,transparent) 1px,transparent 1px);background-size:10% 100%,2% 100%,100% 50%}
+#multiTrackPanel .mtLane.isEmpty::after{content:'拖入音乐或选择此轨道后开始录音';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;letter-spacing:.4px;color:color-mix(in srgb,var(--muted) 66%,transparent);pointer-events:none}
+#multiTrackPanel .mtClip{top:8px;bottom:8px;border-radius:9px;border-color:hsl(var(--laneHue) 72% 60% / .45);background:linear-gradient(180deg,hsl(var(--laneHue) 64% 48% / .18),color-mix(in srgb,var(--card) 92%,transparent));box-shadow:0 7px 18px rgba(0,0,0,.22),inset 0 1px hsl(var(--laneHue) 78% 72% / .12)}
+#multiTrackPanel .mtClip.isSelected{outline-color:hsl(var(--laneHue) 78% 68% / .9);box-shadow:0 9px 25px rgba(0,0,0,.28),0 0 0 3px hsl(var(--laneHue) 72% 58% / .10)}
+#multiTrackPanel .mtClipWave{opacity:.92}
+#multiTrackPanel .mtClipBody{background:linear-gradient(180deg,transparent 28%,rgba(3,7,13,.72));padding-bottom:8px}
+#multiTrackPanel .mtClipBody span{font-size:10px;letter-spacing:.1px}
+#multiTrackPanel .mtStatus{padding:9px 18px;background:#070b12}
+
+#multiTrackPanel .mtRecordBar{display:grid;gap:10px;padding:12px 18px 14px;border-bottom:1px solid rgba(248,113,113,.34);background:radial-gradient(circle at 18% 0,rgba(239,68,68,.18),transparent 33%),linear-gradient(145deg,rgba(45,9,16,.82),color-mix(in srgb,var(--card2) 90%,#090c12));box-shadow:inset 0 1px rgba(255,255,255,.04)}
+#multiTrackPanel .mtRecordBar.isProcessing{opacity:.82}
+#multiTrackPanel .mtRecordHeader{display:flex;align-items:center;gap:14px}
+#multiTrackPanel .mtRecordIdentity{display:flex;align-items:center;gap:10px;min-width:160px}
+#multiTrackPanel .mtRecordIdentity>div,#multiTrackPanel .mtRecordClock{display:grid;gap:1px}
+#multiTrackPanel .mtRecordIdentity small,#multiTrackPanel .mtRecordClock small,#multiTrackPanel .mtRecordMeter small{font:850 7px var(--mono);letter-spacing:1.2px;color:rgba(252,165,165,.74)}
+#multiTrackPanel .mtRecordIdentity b{font-size:12px;color:#fecaca}
+#multiTrackPanel .mtRecordClock{min-width:92px;padding-left:14px;border-left:1px solid rgba(248,113,113,.24)}
+#multiTrackPanel .mtRecordBar #mtRecordTime{font:950 17px var(--mono);color:#ff6b79;letter-spacing:.8px}
+#multiTrackPanel .mtRecordBar #mtRecordTarget{font-size:11px;color:rgba(254,226,226,.72);flex:1;text-align:right}
+#multiTrackPanel .mtRecordVisual{display:grid;grid-template-columns:minmax(420px,1fr) 230px;gap:12px;align-items:stretch}
+#multiTrackPanel .mtRecordScope{height:94px;position:relative;border:1px solid rgba(248,113,113,.27);border-radius:10px;overflow:hidden;background:#07090e;box-shadow:inset 0 3px 16px rgba(0,0,0,.42)}
+#multiTrackPanel .mtRecordScope canvas{display:block;width:100%;height:100%}
+#multiTrackPanel .mtRecordScope>span{position:absolute;left:9px;top:7px;font:750 8px var(--mono);letter-spacing:.9px;color:rgba(254,202,202,.55);pointer-events:none}
+#multiTrackPanel .mtRecordMeter{display:grid;grid-template-columns:1fr auto;gap:7px 10px;align-content:center;padding:12px;border:1px solid rgba(248,113,113,.2);border-radius:10px;background:rgba(4,7,12,.56)}
+#multiTrackPanel .mtRecordMeter small{grid-column:1/-1}
+#multiTrackPanel .mtRecordMeterTrack{position:relative;height:14px;border-radius:4px;overflow:hidden;background:linear-gradient(90deg,rgba(34,197,94,.2) 0 65%,rgba(250,204,21,.2) 65% 84%,rgba(239,68,68,.22) 84%);border:1px solid rgba(255,255,255,.09)}
+#multiTrackPanel .mtRecordMeterTrack i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#22c55e 0 65%,#facc15 78%,#ef4444 100%);box-shadow:0 0 12px rgba(239,68,68,.26);transition:width .06s linear}
+#multiTrackPanel .mtRecordMeterTrack span{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.18)}
+#multiTrackPanel .mtRecordMeterTrack span:nth-of-type(1){left:65%}#multiTrackPanel .mtRecordMeterTrack span:nth-of-type(2){left:84%}
+#multiTrackPanel .mtRecordMeter b{font:900 11px var(--mono);color:#fecaca;white-space:nowrap}
+#multiTrackPanel .mtRecordMeter em{grid-column:1/-1;font-style:normal;font-size:9px;color:rgba(254,226,226,.58)}
+#multiTrackPanel .mtRecordingClip{position:absolute;top:8px;bottom:8px;z-index:12;min-width:10px;border:1px solid rgba(248,113,113,.85);border-radius:8px;overflow:hidden;background:linear-gradient(180deg,rgba(239,68,68,.3),rgba(76,5,14,.72));box-shadow:0 0 0 2px rgba(239,68,68,.12),0 8px 24px rgba(0,0,0,.3);pointer-events:none}
+#multiTrackPanel .mtRecordingClip canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.95}
+#multiTrackPanel .mtRecordingClip>span{position:absolute;left:8px;top:7px;display:flex;align-items:center;gap:5px;font:850 8px var(--mono);letter-spacing:.8px;color:#fecaca;text-shadow:0 1px 3px #000}
+#multiTrackPanel .mtRecordingClip>span i{width:6px;height:6px;border-radius:50%;background:#ef4444;animation:mtRecordPulse 1.1s infinite}
+#multiTrackPanel .mtRecordingClip>b{position:absolute;right:8px;bottom:7px;font:900 9px var(--mono);color:#fff;text-shadow:0 1px 3px #000;white-space:nowrap}
+@media(max-width:1250px){#multiTrackPanel .mtActionGroup small{display:none}#multiTrackPanel .mtRecordVisual{grid-template-columns:1fr 190px}#multiTrackPanel .mtRulerRow,#multiTrackPanel .mtTrack{grid-template-columns:235px minmax(700px,1fr)}}
+@media(max-width:900px){#multiTrackPanel .mtRecordVisual{grid-template-columns:1fr}#multiTrackPanel .mtRecordHeader{flex-wrap:wrap}#multiTrackPanel .mtRecordBar #mtRecordTarget{text-align:left;flex-basis:100%}#multiTrackPanel .mtMasterRack{border-left:0;padding-left:0}.mtProjectLead,.mtToolTitle{display:none!important}}
+
+
+/* v4.6.0 可见总时长、轨道选中反馈与删除热键 */
+#multiTrackPanel #mtDurationInfo{
+  display:inline-flex;align-items:center;justify-content:center;min-width:116px;padding:5px 9px;
+  border:1px solid rgba(110,231,255,.28);border-radius:8px;background:rgba(7,11,18,.96)!important;
+  color:#f8fafc!important;font:900 11px var(--mono);letter-spacing:.15px;text-transform:none;
+  text-shadow:0 1px 2px #000;box-shadow:inset 0 1px rgba(255,255,255,.05),0 0 0 1px rgba(0,0,0,.18);
+}
+#multiTrackPanel .mtTrack{transition:border-color .14s,box-shadow .14s,background .14s,transform .14s}
+#multiTrackPanel .mtTrack.isSelectedLane{
+  border-color:hsl(var(--laneHue) 82% 66% / .92);
+  background:linear-gradient(90deg,hsl(var(--laneHue) 72% 48% / .15),color-mix(in srgb,var(--btnbg) 90%,transparent));
+  box-shadow:0 0 0 2px hsl(var(--laneHue) 78% 62% / .20),0 9px 28px rgba(0,0,0,.22);
+}
+#multiTrackPanel .mtTrack.isSelectedLane .mtTrackControl{
+  box-shadow:inset 0 0 0 1px hsl(var(--laneHue) 78% 66% / .24),0 0 18px hsl(var(--laneHue) 74% 54% / .10);
+}
+#multiTrackPanel .mtTrack.isSelectedLane .mtTrackControl::after{
+  content:'已选中';position:absolute;right:8px;bottom:7px;padding:2px 6px;border-radius:999px;
+  color:hsl(var(--laneHue) 86% 75%);background:hsl(var(--laneHue) 72% 48% / .13);
+  border:1px solid hsl(var(--laneHue) 75% 60% / .22);font:850 8px var(--mono);letter-spacing:.5px;pointer-events:none;
+}
+#multiTrackPanel .mtLane.isSelectedLane{
+  border-color:hsl(var(--laneHue) 82% 66% / .78);
+  box-shadow:inset 0 0 0 2px hsl(var(--laneHue) 76% 62% / .16),inset 0 2px 12px rgba(0,0,0,.18),0 0 20px hsl(var(--laneHue) 70% 52% / .08);
+}
+#multiTrackPanel .mtTrack.isSelectedLane .mtTrackStateDot{animation:mtSelectedPulse 1.15s ease-in-out infinite}
+#multiTrackPanel .mtClip.isSelected{outline-width:3px;outline-offset:1px}
+@keyframes mtSelectedPulse{0%,100%{transform:scale(.85);opacity:.65}50%{transform:scale(1.25);opacity:1}}
+
+#multiTrackPanel .mtLaneInspector{display:flex;align-items:center;justify-content:space-between;gap:12px;border-style:solid;border-color:color-mix(in srgb,var(--p2) 26%,var(--line));background:color-mix(in srgb,var(--p2) 6%,var(--btnbg2))}
+#multiTrackPanel .mtLaneInspector b{color:var(--text);font-size:12px}
+#multiTrackPanel .mtLaneInspector span{color:var(--muted);font-size:10px}
+
+
+/* v4.6.2 时间刻度、选择反馈与 A1 恢复加固 */
+#multiTrackPanel .mtRuler{background:#070c14!important;border:1px solid rgba(148,163,184,.18);box-shadow:inset 0 2px 12px rgba(0,0,0,.42)}
+#multiTrackPanel .mtTimeBox{background:#070c14!important;border-color:rgba(110,231,255,.25)!important}
+#multiTrackPanel .mtTimeBox small{color:#9fb3c8!important}
+#multiTrackPanel #mtTime{color:#f8fafc!important;text-shadow:0 1px 2px #000}
+#multiTrackPanel .mtRulerInfo>span:first-child{color:#cbd5e1!important}
+body[data-multitrack-active="0"][data-music-mode="p1"] #msP1Wrap{display:block!important}
+body[data-multitrack-active="0"][data-music-mode="p1"] #p1SizeBar{display:flex!important}
+body[data-multitrack-active="0"][data-music-mode="p1"] #p1ConsoleFrame{display:block!important}

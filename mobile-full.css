@@ -1,0 +1,47 @@
+/* 完整桌面版的移动/平板适配层：只改变布局，不隐藏业务模块。 */
+html{scroll-behavior:smooth}
+body{padding-bottom:env(safe-area-inset-bottom)}
+button,.btn,.tab,.bnav,.sbtn{touch-action:manipulation}
+input,textarea,select{font-size:max(16px,1em)}
+@media(max-width:1180px){
+  .topbar,.header{padding-left:14px!important;padding-right:14px!important}
+  .wrap,.container{max-width:100%!important;padding-left:12px!important;padding-right:12px!important}
+  .tabs{overflow-x:auto!important;scrollbar-width:none;flex-wrap:nowrap!important;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto!important;min-height:44px}
+  .grid,.two,.three,.four,.wbGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .tableWrap,.wbTableWrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  table{min-width:720px}
+  #viewMusic .musicLayout,#viewMusic .split,#viewVideoModule .rvx-shell{grid-template-columns:1fr!important}
+}
+@media(max-width:720px){
+  body{font-size:14px}
+  .topbar{position:sticky!important;top:0;z-index:999}
+  .topbar h1,.header h1{font-size:18px!important}
+  .top-actions,.actions,.rowBtns{gap:7px!important;flex-wrap:wrap}
+  .grid,.two,.three,.four,.wbGrid,.wbKpis,.custStats,.cards{grid-template-columns:1fr!important}
+  .card{border-radius:16px!important}
+  .card .bd,.cardBody{padding:12px!important}
+  .bottom-nav,.bottomNav{padding-bottom:calc(7px + env(safe-area-inset-bottom))!important}
+  .bnav{min-height:52px}
+  .modal,.dialog{width:calc(100vw - 20px)!important;max-height:88vh!important;overflow:auto}
+  #viewMusic .musicShell,#viewMusic .musicLayout{display:block!important}
+  #viewMusic .sidebar,#viewMusic .musicSide{max-height:42vh!important;overflow:auto}
+  #multitrackEditorRoot{min-width:980px}
+  #viewMultitrack,.multitrack-editor-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  .wbPhoneBoard{max-width:100%!important}
+  .wbPhoneLine{grid-template-columns:86px 1fr!important}
+  #mobileKnowledgeQuick{display:flex!important}
+}
+#mobileKnowledgeQuick{display:none;position:fixed;z-index:2147483000;right:14px;bottom:calc(70px + env(safe-area-inset-bottom));align-items:center;justify-content:center;min-width:112px;min-height:48px;padding:0 15px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:linear-gradient(135deg,#168a58,#27a66a);color:#fff;font-weight:800;box-shadow:0 12px 28px rgba(18,91,57,.32);touch-action:manipulation}
+body:not([data-mobile-music-active="1"]) #mobileKnowledgeQuick{display:none!important}
+#mobileInstallApp{display:none;position:fixed;z-index:2147483002;left:14px;bottom:calc(70px + env(safe-area-inset-bottom));min-height:48px;padding:0 15px;border:0;border-radius:999px;background:#171a24;color:#fff;font-weight:800;box-shadow:0 12px 28px rgba(20,22,31,.28)}
+@media(max-width:720px){#mobileInstallApp[data-show="1"]{display:block}}
+#pwaUpdateNotice{position:fixed;z-index:2147483600;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top));display:none;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:15px;background:#171a24;color:#fff;box-shadow:0 12px 36px rgba(0,0,0,.3)}
+#pwaUpdateNotice.show{display:flex}#pwaUpdateNotice button{border:0;border-radius:10px;background:#b37a36;color:#fff;padding:9px 13px;font-weight:750}
+#pwaNetworkState{position:fixed;z-index:2147483500;top:calc(8px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:none;padding:8px 13px;border-radius:999px;background:#805620;color:#fff;font-size:12px;font-weight:750;box-shadow:0 8px 20px rgba(40,25,8,.22)}
+#pwaNetworkState.show{display:block}
+@media(orientation:landscape) and (max-height:600px){
+  .topbar{position:relative!important}
+  .modal,.dialog{max-height:96vh!important}
+}
