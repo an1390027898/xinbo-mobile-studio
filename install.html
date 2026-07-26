@@ -35,11 +35,24 @@ async function run(){
   $('guide').style.display='none';
   try{
     if(!('serviceWorker'in navigator))throw new Error('此浏览器不支持网页程序');
-    await navigator.serviceWorker.register('./sw.js');
-    await navigator.serviceWorker.ready;
+    if(sessionStorage.getItem('xinbo_clean_install_v24')!=='1'){
+      sessionStorage.setItem('xinbo_clean_install_v24','1');
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.filter(reg=>reg.scope.includes('/xinbo-mobile-studio-new/')).map(reg=>reg.unregister()));
+      if('caches'in window){
+        const keys=await caches.keys();
+        await Promise.all(keys.filter(key=>key.includes('xinbo-mobile-studio-new')||key==='xinbo-manual-bootstrap-v1').map(key=>caches.delete(key)));
+      }
+      location.reload();return;
+    }
+    await navigator.serviceWorker.register('./sw.js?v=24');
+    await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('网页程序接管超时，请关闭 Safari 后重新打开本检测页')),12000))
+    ]);
     if(!navigator.serviceWorker.controller){
-      if(sessionStorage.getItem('xinbo_install_reloaded_v23')!=='1'){
-        sessionStorage.setItem('xinbo_install_reloaded_v23','1');
+      if(sessionStorage.getItem('xinbo_install_reloaded_v24')!=='1'){
+        sessionStorage.setItem('xinbo_install_reloaded_v24','1');
         location.reload();return;
       }
       throw new Error('网页程序尚未接管，请关闭本页后重新打开');
@@ -48,7 +61,10 @@ async function run(){
     const cache=await caches.open('xinbo-manual-bootstrap-v1');
     const files=['./index.html','./install.html','./mobile-full.css','./mobile-adapter.js','./manifest.webmanifest','./icon-512.png'];
     for(const file of files){
-      const response=await fetch(file+'?install='+Date.now(),{cache:'no-store'});
+      const response=await Promise.race([
+        fetch(file+'?install='+Date.now(),{cache:'no-store'}),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('下载超时：'+file)),30000))
+      ]);
       if(!response.ok)throw new Error('下载失败：'+file);
       await cache.put(file,response.clone());
     }
