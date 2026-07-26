@@ -20431,6 +20431,18 @@ ${"</scr"+"ipt>"}
           .wrap{ max-width: 1200px; margin: 0 auto; padding: 14px 14px 18px; }
           .card, .panel, .box{ border-radius: var(--radius) !important; box-shadow: var(--shadow) !important; }
           .btn, button{ border-radius: 14px !important; }
+          @media(max-width:720px){
+            html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+            .wrap,main,.app,.shell,.container{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding-left:8px!important;padding-right:8px!important}
+            .grid,.cols,.two,.three,.four,.layout,.contentGrid{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
+            .card,.panel,.box,section,article{max-width:100%!important;min-width:0!important}
+            table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+            th,td{white-space:normal!important;word-break:break-all!important;font-size:11px!important;padding:6px 4px!important}
+            input,select,textarea{max-width:100%!important;min-width:0!important}
+            img,video,canvas,iframe{max-width:100%!important;height:auto}
+            [style*="min-width"]{min-width:0!important}
+            [style*="grid-template-columns"]{grid-template-columns:minmax(0,1fr)!important}
+          }
         `;
         (doc.head || doc.documentElement).appendChild(st);
       }
@@ -25789,8 +25801,8 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
     height:34px!important;
   }
   #rightTop{
-    flex:0 0 min(31%,210px)!important;
-    min-height:150px!important;
+    flex:0 0 min(23%,160px)!important;
+    min-height:112px!important;
     padding:7px!important;
   }
   #splitV{display:none!important}
@@ -40335,7 +40347,42 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
     toast('接亲总览表格已导出 ✅');
   }
   function exportPickupSummaryImage(){
-    exportHtmlAsPng('接亲总览', renderPickupSummary(), `接亲总览_${wb.base.weddingDate||todayISO()}.png`);
+    const rows=pickupSummaryTableRows();
+    const canvas=document.createElement('canvas'), ctx=canvas.getContext('2d');
+    const width=1200, pad=34, titleH=104, headH=58, cols=[210,260,662], font='24px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif';
+    const wrap=(text,maxWidth)=>{
+      const out=[];let line='';
+      Array.from(String(text||'—')).forEach(ch=>{const next=line+ch;if(ctx.measureText(next).width>maxWidth&&line){out.push(line);line=ch}else line=next});
+      if(line)out.push(line);return out.length?out:['—'];
+    };
+    ctx.font=font;
+    const prepared=rows.map(r=>{
+      const parts=r.map((v,i)=>wrap(v,cols[i]-24));
+      return {parts,height:Math.max(52,Math.max(...parts.map(x=>x.length))*34+18)};
+    });
+    canvas.width=width;canvas.height=titleH+headH+prepared.reduce((n,r)=>n+r.height,0)+pad;
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.textBaseline='middle';ctx.textAlign='center';
+    ctx.fillStyle='#df001b';ctx.font='bold 42px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('婚礼时间日程表',width/2,54);
+    const x0=pad,y0=titleH,totalW=cols.reduce((a,b)=>a+b,0);
+    ctx.fillStyle='#f7c8d4';ctx.fillRect(x0,y0,totalW,headH);
+    ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.strokeRect(x0,y0,totalW,headH);
+    let hx=x0;['模块','项目','内容'].forEach((t,i)=>{ctx.font='bold 24px -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif';ctx.fillStyle='#251c25';ctx.fillText(t,hx+cols[i]/2,y0+headH/2);hx+=cols[i];if(i<2){ctx.beginPath();ctx.moveTo(hx,y0);ctx.lineTo(hx,y0+headH);ctx.stroke()}});
+    let y=y0+headH;
+    prepared.forEach((row,ri)=>{
+      let x=x0;
+      row.parts.forEach((lines,i)=>{
+        ctx.fillStyle=i===0?'#f7c8d4':i===1?'#fff3f6':(ri%2?'#fffafb':'#fff');
+        ctx.fillRect(x,y,cols[i],row.height);
+        ctx.strokeStyle='#333';ctx.lineWidth=1.5;ctx.strokeRect(x,y,cols[i],row.height);
+        ctx.fillStyle='#211d21';ctx.font=`${i<2?'bold ':''}${font}`;ctx.textAlign=i===2?'left':'center';
+        lines.forEach((line,li)=>{const yy=y+(row.height-lines.length*34)/2+17+li*34;ctx.fillText(line,i===2?x+12:x+cols[i]/2,yy)});
+        x+=cols[i];
+      });
+      y+=row.height;
+    });
+    canvas.toBlob(blob=>{if(blob)deliverImageBlob(`接亲总览_${wb.base.weddingDate||todayISO()}.png`,blob);else alert('接亲总览图片生成失败，请重试')},'image/png');
   }
   function renderPickupSummary(){
     const rows=pickupSummaryTableRows();

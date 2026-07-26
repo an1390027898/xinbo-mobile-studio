@@ -1,4 +1,4 @@
-const VERSION='xinbo-pwa-v13-mobile-queue-and-workflow'
+const VERSION='xinbo-pwa-v14-focus-player-and-table-image'
 const CORE=['./','./index.html','./knowledge.html','./preferences.html','./output.html','./license.html','./splash.html','./mobile-full.css','./mobile-adapter.js','./manifest.webmanifest','./icon-512.png','./video-final.css','./video-final.js','./lame.min.js','./vendor/lunar-javascript/lunar.js']
 self.addEventListener('install',event=>event.waitUntil(caches.open(VERSION).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())))
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==VERSION).map(key=>caches.delete(key)))).then(()=>self.clients.claim())))

@@ -17,6 +17,10 @@ input,textarea,select{font-size:max(16px,1em)}
   #viewMusic .musicLayout,#viewMusic .split,#viewVideoModule .rvx-shell{grid-template-columns:1fr!important}
 }
 @media(max-width:720px){
+  body[data-main-view="music"]{padding-top:0!important}
+  body[data-main-view="music"]>.wrap>.header{display:none!important}
+  body[data-main-view="music"]>.wrap{padding-top:0!important}
+  body[data-main-view="music"] #viewMusic{margin-top:0!important;padding-top:0!important}
   body{font-size:14px}
   .topbar{position:sticky!important;top:0;z-index:999}
   .topbar h1,.header h1{font-size:18px!important}
@@ -235,7 +239,7 @@ input,textarea,select{font-size:max(16px,1em)}
   #viewMusic #p1ConsoleFrame{
     display:block!important;
     width:100%!important;
-    height:calc(100dvh - 185px)!important;
+    height:calc(100dvh - 78px)!important;
     min-height:560px!important;
     border-radius:14px!important;
     box-shadow:none!important;
