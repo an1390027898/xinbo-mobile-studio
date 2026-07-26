@@ -1,6 +1,6 @@
 const SCOPE_KEY=new URL(self.registration.scope).pathname.replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'')||'root'
 const CACHE_PREFIX=`xinbo-pwa-${SCOPE_KEY}-`
-const VERSION=`${CACHE_PREFIX}v24-clean-fast-install`
+const VERSION=`${CACHE_PREFIX}v25-platform-aware-install`
 const ESSENTIAL=['./install.html']
 const OPTIONAL=[]
 self.addEventListener('install',event=>event.waitUntil(

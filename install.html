@@ -35,8 +35,9 @@ async function run(){
   $('guide').style.display='none';
   try{
     if(!('serviceWorker'in navigator))throw new Error('此浏览器不支持网页程序');
-    if(sessionStorage.getItem('xinbo_clean_install_v24')!=='1'){
-      sessionStorage.setItem('xinbo_clean_install_v24','1');
+    const isAndroid=/Android/i.test(navigator.userAgent);
+    if(!isAndroid&&sessionStorage.getItem('xinbo_clean_install_v25')!=='1'){
+      sessionStorage.setItem('xinbo_clean_install_v25','1');
       const regs=await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.filter(reg=>reg.scope.includes('/xinbo-mobile-studio-new/')).map(reg=>reg.unregister()));
       if('caches'in window){
@@ -45,14 +46,23 @@ async function run(){
       }
       location.reload();return;
     }
-    await navigator.serviceWorker.register('./sw.js?v=24');
-    await Promise.race([
-      navigator.serviceWorker.ready,
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error('网页程序接管超时，请关闭 Safari 后重新打开本检测页')),12000))
-    ]);
-    if(!navigator.serviceWorker.controller){
-      if(sessionStorage.getItem('xinbo_install_reloaded_v24')!=='1'){
-        sessionStorage.setItem('xinbo_install_reloaded_v24','1');
+    const reg=await navigator.serviceWorker.register('./sw.js?v=25');
+    if(isAndroid){
+      await Promise.race([
+        new Promise(resolve=>{
+          const check=()=>{if(reg.active||reg.waiting){resolve();return}setTimeout(check,250)};check();
+        }),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('安装器激活超时，请使用 Chrome 浏览器重新打开')),15000))
+      ]);
+    }else{
+      await Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('网页程序接管超时，请关闭 Safari 后重新打开本检测页')),12000))
+      ]);
+    }
+    if(!isAndroid&&!navigator.serviceWorker.controller){
+      if(sessionStorage.getItem('xinbo_install_reloaded_v25')!=='1'){
+        sessionStorage.setItem('xinbo_install_reloaded_v25','1');
         location.reload();return;
       }
       throw new Error('网页程序尚未接管，请关闭本页后重新打开');
@@ -72,6 +82,9 @@ async function run(){
     const checks=await Promise.all(['./mobile-full.css','./mobile-adapter.js'].map(x=>caches.match(x)));
     if(checks.some(x=>!x))throw new Error('核心资源缓存不完整');
     mark('assets',true,'完成');
+    $('guide').innerHTML=isAndroid
+      ? '✅ 安卓离线程序已经准备完成。请使用 Chrome 右上角菜单，选择“添加到主屏幕”或“安装应用”。'
+      : '✅ 离线程序已经安装完成。现在点击 Safari 的“分享”按钮，选择“添加到主屏幕”。请添加当前这个安装检测页。';
     $('guide').style.display='block';
   }catch(e){
     if($('worker').textContent!=='完成')mark('worker',false,'未完成');
@@ -79,7 +92,7 @@ async function run(){
     if($('assets').textContent!=='完成')mark('assets',false,'未完成');
     $('guide').style.display='block';
     $('guide').style.background='#fff0f0';$('guide').style.color='#9f3434';
-    $('guide').textContent='检测没有完成：'+(e.message||e)+'。请保持 Safari 能正常打开网页后点“重新检测”。';
+    $('guide').textContent='检测没有完成：'+(e.message||e)+'。请保持当前浏览器能正常打开网页后点“重新检测”。';
   }
 }
 $('retry').onclick=()=>location.reload();
