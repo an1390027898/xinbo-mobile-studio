@@ -10,7 +10,7 @@
     .dot{width:58px;height:58px;margin:0 auto 16px;border-radius:18px;background:linear-gradient(135deg,#ed79bf,#7d70f4)}
     h1{font-size:22px;margin:0 0 10px}p{color:#686775;line-height:1.65;margin:0}
     #state{margin-top:16px;font-weight:800;color:#6958da}
-    button{display:none;width:100%;min-height:48px;margin-top:18px;border:0;border-radius:14px;background:#6f61e8;color:#fff;font-size:16px;font-weight:800}
+    button,a.next{display:none;width:100%;min-height:48px;margin-top:18px;border:0;border-radius:14px;background:#6f61e8;color:#fff;font-size:16px;font-weight:800;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}
   </style>
 </head>
 <body>
@@ -19,11 +19,12 @@
     <h1>正在强制更新</h1>
     <p>正在移除旧网页程序缓存。档期、客户、婚礼管家和本机歌曲数据不会被清除。</p>
     <div id="state">正在处理，请稍候…</div>
+    <a class="next" id="next" href="./index.html?fresh=v18#schedule">第二步：打开最新版</a>
     <button id="retry" type="button">重新尝试</button>
   </main>
   <script>
     (async()=>{
-      const state=document.getElementById('state'),retry=document.getElementById('retry');
+      const state=document.getElementById('state'),retry=document.getElementById('retry'),next=document.getElementById('next');
       try{
         if('serviceWorker' in navigator){
           const regs=await navigator.serviceWorker.getRegistrations();
@@ -33,8 +34,9 @@
           const keys=await caches.keys();
           await Promise.all(keys.map(key=>caches.delete(key)));
         }
-        state.textContent='旧缓存已清除，正在打开最新版…';
-        setTimeout(()=>location.replace('./index.html?fresh='+Date.now()+'#schedule'),700);
+        state.innerHTML='旧缓存已经清除。<br><br>请先关闭 Safari 里所有本网站标签页，并从后台彻底关闭 Safari；重新打开 Safari 后，再回到本页点击下面按钮。';
+        next.href='./index.html?fresh=v18-'+Date.now()+'#schedule';
+        next.style.display='flex';
       }catch(e){
         state.textContent='自动更新未完成，请点下面按钮重试';
         retry.style.display='block';
