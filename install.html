@@ -38,8 +38,8 @@ async function run(){
     await navigator.serviceWorker.register('./sw.js');
     await navigator.serviceWorker.ready;
     if(!navigator.serviceWorker.controller){
-      if(sessionStorage.getItem('xinbo_install_reloaded')!=='1'){
-        sessionStorage.setItem('xinbo_install_reloaded','1');
+      if(sessionStorage.getItem('xinbo_install_reloaded_v23')!=='1'){
+        sessionStorage.setItem('xinbo_install_reloaded_v23','1');
         location.reload();return;
       }
       throw new Error('网页程序尚未接管，请关闭本页后重新打开');

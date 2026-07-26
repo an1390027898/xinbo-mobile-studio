@@ -209,6 +209,18 @@
           });
         });
       }).catch(()=>{});
+      if('caches'in window&&navigator.onLine){
+        const refreshCore=async()=>{
+          try{
+            const cache=await caches.open('xinbo-manual-bootstrap-v1');
+            for(const file of ['./index.html','./mobile-full.css','./mobile-adapter.js','./manifest.webmanifest','./icon-512.png']){
+              const response=await fetch(file+'?background='+Date.now(),{cache:'no-store'});
+              if(response.ok)await cache.put(file,response.clone());
+            }
+          }catch(_e){}
+        };
+        setTimeout(refreshCore,2500);
+      }
     }
     const net=document.createElement('div');net.id='pwaNetworkState';net.textContent='离线使用中 · 数据保存在本机';document.body.appendChild(net);
     const syncNetwork=()=>net.classList.toggle('show',!navigator.onLine);

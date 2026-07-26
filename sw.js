@@ -1,8 +1,8 @@
 const SCOPE_KEY=new URL(self.registration.scope).pathname.replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'')||'root'
 const CACHE_PREFIX=`xinbo-pwa-${SCOPE_KEY}-`
-const VERSION=`${CACHE_PREFIX}v22-verified-install`
-const ESSENTIAL=['./index.html','./install.html','./mobile-full.css','./mobile-adapter.js','./manifest.webmanifest','./icon-512.png']
-const OPTIONAL=['./','./update.html','./knowledge.html','./preferences.html','./output.html','./license.html','./splash.html','./video-final.css','./video-final.js','./lame.min.js','./vendor/lunar-javascript/lunar.js']
+const VERSION=`${CACHE_PREFIX}v23-fast-install-shell`
+const ESSENTIAL=['./install.html']
+const OPTIONAL=[]
 self.addEventListener('install',event=>event.waitUntil(
   caches.open(VERSION)
     .then(cache=>cache.addAll(ESSENTIAL)
@@ -15,12 +15,9 @@ self.addEventListener('fetch',event=>{
   const url=new URL(event.request.url)
   if(url.origin!==location.origin)return
   if(event.request.mode==='navigate'){
-    event.respondWith(caches.match(event.request).then(hit=>{
-      if(hit)return hit
-      return caches.match('./index.html').then(fallback=>{
-        if(fallback)return fallback
-        return fetch(event.request).then(response=>{if(response.ok){const copy=response.clone();caches.open(VERSION).then(cache=>cache.put('./index.html',copy))}return response}).catch(()=>new Response('<h1>首次缓存尚未完成</h1><p>请联网后用 Safari 打开一次，再重新进入桌面 App。</p>',{headers:{'Content-Type':'text/html;charset=utf-8'}}))
-      })
+    event.respondWith(caches.open(VERSION).then(cache=>cache.match(event.request)).then(hit=>hit||caches.match(event.request)).then(hit=>hit||caches.match('./index.html')).then(fallback=>{
+      if(fallback)return fallback
+      return fetch(event.request).catch(()=>new Response('<h1>首次缓存尚未完成</h1><p>请联网后打开安装检测页，等三项全部完成。</p>',{headers:{'Content-Type':'text/html;charset=utf-8'}}))
     }))
     return
   }
