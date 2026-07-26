@@ -25649,6 +25649,100 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
 @media (max-width:740px){.a1ProfileForm{grid-template-columns:1fr}}
 </style>
 
+<style id="p1MobilePurePlayer">
+@media (max-width:860px){
+  :root{--top:64px}
+  body{overflow:hidden}
+  .topbar{
+    height:64px!important;
+    display:grid!important;
+    grid-template-columns:46px 46px minmax(0,1fr)!important;
+    gap:8px!important;
+    padding:9px 10px!important;
+  }
+  .topbar .brand,
+  .topbar #btnTopToggleLeft,
+  .topbar #btnTopToggleMid,
+  .topbar #btnImport{display:none!important}
+  .topbar #btnPlayPause,
+  .topbar #btnStop{
+    width:46px!important;
+    height:46px!important;
+    min-width:46px!important;
+    min-height:46px!important;
+    padding:0!important;
+    border-radius:13px!important;
+    font-size:18px!important;
+  }
+  .topbar .meter{
+    width:100%!important;
+    min-width:0!important;
+    height:46px!important;
+    padding:0 12px!important;
+    border-radius:13px!important;
+  }
+  .topbar .meter label{display:none!important}
+  .topbar .meter input{width:100%!important;min-width:0!important}
+  .topbar .meter .mono{min-width:34px!important;text-align:right!important;font-size:11px!important}
+
+  .p1MobileBar{
+    height:58px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 72px!important;
+    gap:8px!important;
+    margin:0!important;
+    padding:6px 8px!important;
+    border-bottom:1px solid var(--line)!important;
+  }
+  .p1MobileBar .seg{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    border-radius:13px!important;
+  }
+  .p1MobileBar .seg .segBtn,
+  #btnMobileImportP1{
+    width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+    padding:0 6px!important;
+    border-radius:0!important;
+    font-size:12px!important;
+    font-weight:800!important;
+  }
+  #btnMobileImportP1{border-radius:13px!important}
+  .p1MobileHint{display:none!important}
+  .app{height:calc(100% - 122px)!important}
+
+  .btn,
+  .btn.small,
+  .btn.icon,
+  .btn.tiny{
+    min-height:42px!important;
+    height:42px!important;
+    padding:0 10px!important;
+    border-radius:11px!important;
+    font-size:12px!important;
+    line-height:1!important;
+  }
+  .btn.icon{width:42px!important;min-width:42px!important;padding:0!important}
+  input,select,textarea{font-size:16px!important}
+  .panelHeader,.gridHeader{padding:9px!important;gap:8px!important}
+  .panelHeader{align-items:stretch!important;flex-direction:column!important}
+  .panelHeader .row{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:7px!important;
+  }
+  .panelHeader .row .btn{width:100%!important}
+  #colLeft .panelHeader .row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .panelBody,.gridWrap,.cardBody{padding:9px!important}
+  .search{min-height:46px!important;padding:8px 10px!important}
+  .dropzone .btn{width:100%!important}
+  #queueList{justify-content:center!important}
+}
+</style>
+
 </head>
 <body data-a1-clean-bars="1">
 <script>
@@ -40269,6 +40363,22 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
   }
   function safeFile(s){ return String(s||'婚礼管家').replace(/[\/:*?"<>|\s]+/g,'_').slice(0,60); }
   function downloadBlob(name, blob){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},0); }
+  async function deliverImageBlob(name, blob){
+    try{
+      const file=new File([blob], name, {type:'image/png'});
+      if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+        await navigator.share({files:[file], title:name});
+        toast('图片已生成，请选择“存储到照片”或发送到微信 ✅');
+        return true;
+      }
+    }catch(e){
+      if(e?.name==='AbortError') return false;
+      console.warn('系统分享不可用，改为浏览器下载', e);
+    }
+    downloadBlob(name, blob);
+    toast('图片已导出 ✅');
+    return true;
+  }
   function download(name, text){ downloadBlob(name, new Blob([text],{type:'application/json'})); }
   function shotCss(){ return `<style>.wbShot{box-sizing:border-box;background:#fff;color:#111}.wbShot *{box-sizing:border-box}.wbShot h1{font-size:22px;margin:0 0 14px;line-height:1.25}.wbEventHeader{border:1px solid #bbb;border-radius:12px;padding:12px 14px;margin:0 0 12px;background:#fff}.wbEventTitle{font-size:17px;font-weight:900;margin:0 0 8px;line-height:1.3}.wbEventGrid{display:grid;grid-template-columns:1.05fr .85fr 1fr 1fr;gap:8px 12px}.wbEventItem{font-size:13px;line-height:1.45;word-break:break-word}.wbEventItem b{color:#555;white-space:nowrap}.wbEventItem.wide{grid-column:span 2}.wbEventItem.full{grid-column:1/-1}.wbSection{border:1px solid #ddd;border-radius:12px;padding:13px 14px;margin:0 0 12px;background:#fff;break-inside:avoid}.wbSection h3{margin:0 0 8px;font-size:17px;line-height:1.3}.wbHint{font-size:12px;color:#555;line-height:1.5;margin:3px 0 7px}.wbGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.wbField label{display:block;font-size:11px;color:#666;margin:0 0 3px}.wbField{break-inside:avoid}.wbKpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:6px 0}.wbKpi{border:1px solid #ddd;border-radius:9px;padding:8px;background:#fafafa}.lab{font-size:11px;color:#666}.val{font-size:16px;font-weight:800;margin-top:3px}.wbTable{width:100%;border-collapse:collapse}.wbTable th,.wbTable td{border:1px solid #ccc;padding:7px 8px;font-size:12px;vertical-align:top;line-height:1.4;word-break:break-word}.wbTable th{background:#f5f5f5;text-align:left;font-weight:800}.wbTableWrap{overflow:visible}.wbPhoneBoard{max-width:560px;margin:auto;border:1px solid #ddd;border-radius:14px;padding:12px}.wbPhoneLine{display:grid;grid-template-columns:104px 1fr;border-bottom:1px solid #ddd;padding:7px 0;font-size:13px;line-height:1.4}.wbPhoneLine b{color:#555}.wbStaticValue{white-space:pre-wrap;border:1px solid #ddd;border-radius:6px;padding:4px 6px;min-height:18px;background:#fff;color:#111}button,.wbMiniBtns,.wbNoPrint{display:none!important}</style>`; }
   function freezeControls(root){
@@ -40292,19 +40402,22 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
       const holder=document.createElement('div');
       holder.className='wbShot';
       holder.setAttribute('xmlns','http://www.w3.org/1999/xhtml');
-      holder.style.cssText='position:fixed;left:-20000px;top:0;width:1400px;background:#fff;color:#111;padding:20px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;z-index:-1;';
+      const mobileExport=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      holder.style.cssText=`position:fixed;left:-20000px;top:0;width:${mobileExport?900:1400}px;background:#fff;color:#111;padding:20px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;z-index:-1;`;
       const isFullSheet = String(inner||'').includes('data-wb-fullsheet="1"');
       holder.innerHTML = `${shotCss()}${isFullSheet ? inner : `<h1>${h(title)}</h1>${inner}`}`;
       freezeControls(holder);
       document.body.appendChild(holder);
       await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-      const width=Math.max(1000, Math.ceil(holder.scrollWidth));
-      const height=Math.min(16000, Math.max(600, Math.ceil(holder.scrollHeight)+20));
+      const width=Math.max(mobileExport?900:1000, Math.ceil(holder.scrollWidth));
+      const safeCanvasPixels=mobileExport?14000000:22000000;
+      const maxHeight=Math.floor(safeCanvasPixels/width);
+      const height=Math.min(maxHeight, Math.max(600, Math.ceil(holder.scrollHeight)+20));
       const xhtml=new XMLSerializer().serializeToString(holder);
       const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><foreignObject x="0" y="0" width="100%" height="100%">${xhtml}</foreignObject></svg>`;
       const url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}));
       const img=new Image();
-      img.onload=()=>{ try{ const canvas=document.createElement('canvas'); canvas.width=width; canvas.height=height; const ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,width,height); ctx.drawImage(img,0,0); canvas.toBlob(blob=>{ if(blob){ downloadBlob(filename||`${safeFile(title)}.png`, blob); toast('图片已导出 ✅'); } URL.revokeObjectURL(url); holder.remove(); }, 'image/png'); }catch(e){ URL.revokeObjectURL(url); holder.remove(); alert('导出图片失败：当前环境限制截图生成'); } };
+      img.onload=()=>{ try{ const canvas=document.createElement('canvas'); canvas.width=width; canvas.height=height; const ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,width,height); ctx.drawImage(img,0,0); canvas.toBlob(async blob=>{ if(blob) await deliverImageBlob(filename||`${safeFile(title)}.png`, blob); else alert('导出图片失败：手机可用内存不足，请导出内容较少的单页'); URL.revokeObjectURL(url); holder.remove(); }, 'image/png'); }catch(e){ URL.revokeObjectURL(url); holder.remove(); alert('导出图片失败：当前环境限制截图生成'); } };
       img.onerror=()=>{ URL.revokeObjectURL(url); holder.remove(); alert('导出图片失败：当前环境不支持该截图方式'); };
       img.src=url;
     }catch(e){ console.error(e); alert('导出图片失败：'+(e && e.message ? e.message : '未知错误')); }

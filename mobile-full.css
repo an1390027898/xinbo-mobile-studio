@@ -31,6 +31,138 @@ input,textarea,select{font-size:max(16px,1em)}
   #viewMultitrack,.multitrack-editor-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
   .wbPhoneBoard{max-width:100%!important}
   .wbPhoneLine{grid-template-columns:86px 1fr!important}
+
+  /* 手机播放器：只保留本地播放器、音乐库、播放列表与当前队列。 */
+  #viewMusic #musicSystem > h3{display:none!important}
+  #viewMusic .musicCleanSub,
+  #viewMusic .msModeBar,
+  #viewMusic #p1SizeBar,
+  #viewMusic #ktvDetails,
+  #viewMusic #ktvOverlay,
+  #viewMusic #netMusicPanel,
+  #viewMusic #aiMusicPanel,
+  #viewMusic #weddingMusicPanel,
+  #viewMusic #licensedMusicPanel,
+  #viewMusic #extTools,
+  #viewMusic .kgBar{display:none!important}
+
+  #viewMusic #musicSystem{padding:10px!important;overflow:visible!important}
+  #viewMusic #msBuiltinWrap{display:block!important}
+  #viewMusic #msP1Wrap{margin:0!important}
+  #viewMusic #msP1Wrap > .muted,
+  #viewMusic #p1MiniBar{display:none!important}
+  #viewMusic #p1ConsoleFrame{
+    display:block!important;
+    width:100%!important;
+    height:calc(100dvh - 185px)!important;
+    min-height:560px!important;
+    border-radius:14px!important;
+    box-shadow:none!important;
+  }
+  #viewMusic .p1Player{
+    position:relative!important;
+    top:auto!important;
+    margin:0 0 12px!important;
+    padding:14px!important;
+    border-radius:18px!important;
+  }
+  #viewMusic .p1Player > .p1Row:first-child{
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:12px!important;
+  }
+  #viewMusic .p1Now{text-align:center!important}
+  #viewMusic .p1Title{font-size:17px!important}
+  #viewMusic .p1Btns{
+    display:grid!important;
+    grid-template-columns:repeat(3,52px)!important;
+    justify-content:center!important;
+    gap:12px!important;
+  }
+  #viewMusic .p1Btns .iconbtn,
+  #viewMusic .p1Btns .iconbtn.primary,
+  #viewMusic #btnPlay{
+    width:52px!important;
+    height:52px!important;
+    min-width:52px!important;
+    min-height:52px!important;
+    padding:0!important;
+    border-radius:15px!important;
+    font-size:21px!important;
+    line-height:1!important;
+  }
+  #viewMusic .p1Player > .p1Row:nth-child(2){
+    display:grid!important;
+    grid-template-columns:42px minmax(0,1fr) 42px!important;
+    gap:8px!important;
+    margin-top:14px!important;
+  }
+  #viewMusic .p1Seek{width:100%!important;min-width:0!important}
+  #viewMusic .p1Vol{
+    grid-column:1/-1!important;
+    width:100%!important;
+    margin-top:4px!important;
+  }
+  #viewMusic .p1Time{width:42px!important}
+  #viewMusic .p1Modes{display:block!important;margin-top:10px!important}
+  #viewMusic .p1Modes .pill{display:block!important;text-align:center!important;border-radius:12px!important}
+  #viewMusic .p1Modes .pill.muted{display:none!important}
+
+  #viewMusic .msMobileBar{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    margin:0 0 10px!important;
+  }
+  #viewMusic .msMobileBar .seg{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    border-radius:14px!important;
+  }
+  #viewMusic .msMobileBar .seg .segbtn,
+  #viewMusic #btnMobileImport{
+    width:100%!important;
+    min-height:46px!important;
+    height:46px!important;
+    padding:0 10px!important;
+    border-radius:0!important;
+    font-size:14px!important;
+    font-weight:800!important;
+  }
+  #viewMusic #btnMobileImport{border-radius:14px!important}
+  #viewMusic .msMobileHint{font-size:12px!important;line-height:1.5!important}
+
+  #viewMusic #kgGrid{
+    height:auto!important;
+    min-height:0!important;
+    display:block!important;
+  }
+  #viewMusic #kgGrid .kgCol{
+    height:clamp(380px,55dvh,620px)!important;
+    min-height:380px!important;
+    padding:10px!important;
+    border-radius:16px!important;
+  }
+  #viewMusic .kgHead{align-items:center!important;gap:8px!important}
+  #viewMusic .kgHeadRight{display:flex!important;flex-wrap:wrap!important;gap:7px!important}
+  #viewMusic .kgSearch{width:100%!important;min-width:0!important;min-height:44px!important}
+  #viewMusic .btn,
+  #viewMusic .sbtn,
+  #viewMusic .segbtn{
+    min-height:44px!important;
+    height:44px!important;
+    padding:0 12px!important;
+    border-radius:12px!important;
+    font-size:13px!important;
+    line-height:1!important;
+  }
+  #viewMusic .kgQueueFoot{
+    display:grid!important;
+    grid-template-columns:repeat(3,1fr)!important;
+    gap:8px!important;
+  }
+  #viewMusic .kgQueueFoot .sbtn{width:100%!important}
 }
 #mobileInstallApp{display:none;position:fixed;z-index:2147483002;left:14px;bottom:calc(70px + env(safe-area-inset-bottom));min-height:48px;padding:0 15px;border:0;border-radius:999px;background:#171a24;color:#fff;font-weight:800;box-shadow:0 12px 28px rgba(20,22,31,.28)}
 @media(max-width:720px){#mobileInstallApp[data-show="1"]{display:block}}
