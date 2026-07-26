@@ -25650,6 +25650,18 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
 </style>
 
 <style id="p1MobilePurePlayer">
+/* 网页播放器不保留桌面软件的工程维护与演出配置入口。 */
+#btnGlobalSettings,
+#btnShowMode,
+#savePill,
+#btnUndo,
+#btnExport,
+#btnExportZip,
+#btnImportZip,
+#btnImportProject,
+#btnResetStates,
+#btnHelp{display:none!important}
+
 @media (max-width:860px){
   :root{--top:64px}
   body{overflow:hidden}
@@ -25661,6 +25673,7 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
     padding:9px 10px!important;
   }
   .topbar .brand,
+  .topbar .spacer,
   .topbar #btnTopToggleLeft,
   .topbar #btnTopToggleMid,
   .topbar #btnImport{display:none!important}
