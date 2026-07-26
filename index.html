@@ -40388,7 +40388,42 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
   }
   function safeFile(s){ return String(s||'婚礼管家').replace(/[\/:*?"<>|\s]+/g,'_').slice(0,60); }
   function downloadBlob(name, blob){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},0); }
+  function showImageSavePreview(name, blob){
+    const old=document.getElementById('wbImageSavePreview'); if(old) old.remove();
+    const url=URL.createObjectURL(blob);
+    const wrap=document.createElement('div');
+    wrap.id='wbImageSavePreview';
+    wrap.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(10,12,20,.82);display:flex;align-items:flex-end;justify-content:center;padding:12px;';
+    wrap.innerHTML=`<div style="width:min(720px,100%);max-height:94vh;overflow:auto;background:#fff;color:#151724;border-radius:20px;padding:14px;box-shadow:0 20px 60px rgba(0,0,0,.38)">
+      <div style="font-size:18px;font-weight:850;margin:2px 2px 6px">图片已生成</div>
+      <div style="font-size:13px;color:#666;line-height:1.5;margin:0 2px 10px">iPhone 请点“分享并保存”，再选择“存储到照片”；也可以长按下方图片保存。</div>
+      <img alt="导出的婚礼管家图片" style="display:block;width:100%;height:auto;max-height:68vh;object-fit:contain;background:#f4f4f6;border:1px solid #ddd;border-radius:12px" src="${url}">
+      <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:10px;margin-top:12px">
+        <button type="button" data-wb-share style="min-height:48px;border:0;border-radius:13px;background:#7567ee;color:#fff;font-size:16px;font-weight:800">分享并保存</button>
+        <button type="button" data-wb-close style="min-height:48px;border:1px solid #ddd;border-radius:13px;background:#fff;color:#222;font-size:16px;font-weight:750">完成</button>
+      </div>
+    </div>`;
+    const close=()=>{ URL.revokeObjectURL(url); wrap.remove(); };
+    wrap.querySelector('[data-wb-close]').onclick=close;
+    wrap.addEventListener('click',e=>{ if(e.target===wrap) close(); });
+    wrap.querySelector('[data-wb-share]').onclick=async()=>{
+      try{
+        const file=new File([blob],name,{type:'image/png'});
+        if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+          await navigator.share({files:[file],title:name});
+          return;
+        }
+        downloadBlob(name,blob);
+        toast('已尝试保存；若没有出现文件，请长按图片保存');
+      }catch(e){ if(e?.name!=='AbortError') toast('请长按图片，选择“存储到照片”'); }
+    };
+    document.body.appendChild(wrap);
+  }
   async function deliverImageBlob(name, blob){
+    if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.matchMedia?.('(display-mode: standalone)').matches){
+      showImageSavePreview(name, blob);
+      return true;
+    }
     try{
       const file=new File([blob], name, {type:'image/png'});
       if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
@@ -40400,8 +40435,12 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
       if(e?.name==='AbortError') return false;
       console.warn('系统分享不可用，改为浏览器下载', e);
     }
-    downloadBlob(name, blob);
-    toast('图片已导出 ✅');
+    try{
+      downloadBlob(name, blob);
+      toast('图片已导出 ✅');
+    }catch(e){
+      showImageSavePreview(name, blob);
+    }
     return true;
   }
   function download(name, text){ downloadBlob(name, new Blob([text],{type:'application/json'})); }
