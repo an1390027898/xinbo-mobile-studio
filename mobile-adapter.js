@@ -162,6 +162,21 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',scheduleHashView,{once:true});
   else scheduleHashView();
   window.addEventListener('hashchange',()=>setTimeout(openHashView,0));
+  const installCompactHeader=()=>{
+    const menu=document.querySelector('.mobileToolsMenu');if(!menu)return;
+    const mq=matchMedia('(max-width:720px)');
+    const sync=()=>{
+      if(mq.matches){
+        if(menu.dataset.mobileReady!=='1'){menu.open=false;menu.dataset.mobileReady='1'}
+      }else{menu.open=true;menu.dataset.mobileReady='0'}
+    };
+    sync();mq.addEventListener?.('change',sync);
+    menu.addEventListener('click',event=>{
+      if(!mq.matches||event.target.closest('summary'))return;
+      if(event.target.closest('button'))setTimeout(()=>{menu.open=false},0);
+    });
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installCompactHeader,{once:true});else installCompactHeader();
   const installPwaSupport=()=>{
     if(!document.body)return;
     let installPrompt=null;
