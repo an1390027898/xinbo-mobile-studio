@@ -3546,16 +3546,20 @@ body[data-a1-mix-visual="1"] #rightTop > .card > .cardBody{
     <div class="wbHeroTop">
       <div>
         <h2>婚礼管家执行清单</h2>
-        <div class="sub2">把男方填写、女方填写、总控汇总、流程时间推算、人工可编辑执行时间、档期/客户匹配、岗位打印、图片导出和手机当天看板合并到程序里，数据本地自动保存。</div>
       </div>
       <div class="wbActions">
         <button class="btn primary" id="wbSaveNow" type="button">保存</button>
-        <button class="btn" id="wbExportJson" type="button">导出管家数据</button>
-        <button class="btn" id="wbImportJson" type="button">导入管家数据</button>
-        <button class="btn" id="wbPrintCurrent" type="button">打印当前页</button>
         <button class="btn" id="wbExportCurrentImage" type="button">导出当前页图片</button>
-        <button class="btn danger" id="wbReset" type="button">重置管家表</button>
-        <input id="wbImportFile" type="file" accept="application/json" hidden>
+        <details class="wbMoreActions" id="wbMoreActions">
+          <summary class="btn">更多操作</summary>
+          <div class="wbMorePanel">
+            <button class="btn" id="wbExportJson" type="button">导出管家数据</button>
+            <button class="btn" id="wbImportJson" type="button">导入管家数据</button>
+            <button class="btn" id="wbPrintCurrent" type="button">打印当前页</button>
+            <button class="btn danger" id="wbReset" type="button">重置管家表</button>
+            <input id="wbImportFile" type="file" accept="application/json" hidden>
+          </div>
+        </details>
       </div>
     </div>
   </section>

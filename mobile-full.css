@@ -116,6 +116,89 @@ input,textarea,select{font-size:max(16px,1em)}
   .mobileToolsPanel .pill{display:none!important}
   .mobileToolsPanel .menu>summary{width:100%!important;justify-content:center!important}
   .mobileToolsPanel .menuPanel{right:0!important;left:auto!important}
+
+  /* 档期统计：缩成单行滑动小卡，不再占据半屏。 */
+  #viewSchedule .sched-summary{
+    display:grid!important;
+    grid-auto-flow:column!important;
+    grid-auto-columns:minmax(164px,62vw)!important;
+    gap:8px!important;
+    overflow-x:auto!important;
+    scroll-snap-type:x proximity!important;
+    padding:0 0 5px!important;
+  }
+  #viewSchedule .sched-summary .stat{
+    min-height:106px!important;
+    padding:10px 11px!important;
+    border-radius:16px!important;
+    scroll-snap-align:start!important;
+  }
+  #viewSchedule .sched-summary .stat .label{font-size:12px!important}
+  #viewSchedule .sched-summary .stat .value{margin-top:4px!important;font-size:19px!important}
+  #viewSchedule .sched-summary .stat .small{margin-top:4px!important;font-size:11px!important;line-height:1.35!important}
+  #viewSchedule #statIncomeLabel{display:none!important}
+  #viewSchedule .income-eye-btn{width:34px!important;height:34px!important;min-height:34px!important}
+
+  /* 婚礼管家：常用按钮保留，低频操作折叠；模块导航单行滑动。 */
+  #viewWeddingButler .wbShell{gap:10px!important;margin-top:10px!important}
+  #viewWeddingButler .wbHero{padding:12px!important}
+  #viewWeddingButler .wbHeroTop{display:block!important}
+  #viewWeddingButler .wbHero h2{font-size:18px!important}
+  #viewWeddingButler .wbActions{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:minmax(72px,.72fr) minmax(132px,1.35fr) minmax(92px,.9fr)!important;
+    gap:8px!important;
+    margin-top:10px!important;
+  }
+  #viewWeddingButler .wbActions>.btn,
+  #viewWeddingButler .wbMoreActions>summary{
+    width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+    padding:0 9px!important;
+    border-radius:13px!important;
+    white-space:nowrap!important;
+    justify-content:center!important;
+  }
+  #viewWeddingButler .wbMoreActions{position:relative!important}
+  #viewWeddingButler .wbMoreActions>summary{display:flex!important;align-items:center!important;list-style:none!important}
+  #viewWeddingButler .wbMoreActions>summary::-webkit-details-marker{display:none!important}
+  #viewWeddingButler .wbMorePanel{
+    position:absolute!important;
+    z-index:13000!important;
+    right:0!important;
+    top:calc(100% + 7px)!important;
+    width:min(240px,75vw)!important;
+    display:grid!important;
+    gap:7px!important;
+    padding:9px!important;
+    border:1px solid var(--line)!important;
+    border-radius:14px!important;
+    background:var(--card)!important;
+    box-shadow:0 16px 44px rgba(0,0,0,.24)!important;
+  }
+  #viewWeddingButler .wbMorePanel .btn{width:100%!important;min-height:44px!important;justify-content:flex-start!important}
+  #viewWeddingButler .wbNav{
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    gap:8px!important;
+    overflow-x:auto!important;
+    scroll-snap-type:x proximity!important;
+    overscroll-behavior-x:contain!important;
+    padding:2px 1px 7px!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  #viewWeddingButler .wbNav::-webkit-scrollbar{display:none!important}
+  #viewWeddingButler .wbNav button{
+    flex:0 0 auto!important;
+    min-width:108px!important;
+    min-height:44px!important;
+    padding:0 13px!important;
+    border-radius:13px!important;
+    white-space:nowrap!important;
+    scroll-snap-align:start!important;
+  }
   .top-actions,.actions,.rowBtns{gap:7px!important;flex-wrap:wrap}
   .grid,.two,.three,.four,.wbGrid,.wbKpis,.custStats,.cards{grid-template-columns:1fr!important}
   .card{border-radius:16px!important}
